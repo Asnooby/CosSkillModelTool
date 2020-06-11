@@ -1,39 +1,24 @@
 #pragma once
 
-#include "IDllExport.h"
+#include "../IDllExport.h"
 #include <string>
 #include <map>
 #include <vector>
-
-#include "IDllExport.h"
-
-typedef struct
-{
-	int startLine = 0;
-	int endLine = 0;
-	std::string id;
-	std::string block;
-
-	void init()
-	{
-		startLine = 0;
-		endLine = 0;
-		id.clear();
-		block.clear();
-	}
-} SKILL_BLOCK;
+#include <set>
+#include "BaseDefine.h"
 
 typedef std::map<std::string, std::map<std::string, SKILL_BLOCK> > SKILL_MAP;
-class DLL_API CSkillDataLuaProcesser
+class DLL_API CSkillDataLuaProcessor
 {
 public:
-	CSkillDataLuaProcesser();
+	CSkillDataLuaProcessor();
 
 public:
 	void SetHeroId(std::string heroId);
 	SKILL_MAP& GetSkills();
-	void GetSkillData(std::string skillId, std::map<std::string, std::string>& outSkills, bool bWithAddition);
+	void GetSkillData(std::string skillId, std::map<std::string, std::string>& outSkills);
 	void GetDamageData(std::string skillId, std::map<std::string, std::string>& outSkills);
+	void GetSkillIds(std::string skillId, std::vector<std::string>& outSkills);
 	std::string GetSkillTotalContent(std::string skillId);
 
 protected:
@@ -41,6 +26,7 @@ protected:
 	void parseLuaDamageInfo(std::string path, SKILL_MAP& outCfg);
 
 private:
+	std::map<std::string, std::set<std::string> > m_useSkills;
 	SKILL_MAP m_skills;
 	SKILL_MAP m_damages;
 };

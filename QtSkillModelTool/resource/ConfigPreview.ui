@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ConfigPreview</class>
+ <widget class="QWidget" name="ConfigPreview">
+  <property name="windowModality">
+   <enum>Qt::NonModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1035</width>
+    <height>803</height>
+   </rect>
+  </property>
+  <property name="contextMenuPolicy">
+   <enum>Qt::DefaultContextMenu</enum>
+  </property>
+  <property name="windowTitle">
+   <string/>
+  </property>
+  <widget class="QTextEdit" name="edit_content">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>20</y>
+     <width>841</width>
+     <height>752</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>新宋体</family>
+     <pointsize>10</pointsize>
+    </font>
+   </property>
+   <property name="lineWrapColumnOrWidth">
+    <number>720</number>
+   </property>
+   <property name="tabStopWidth">
+    <number>20</number>
+   </property>
+  </widget>
+  <widget class="QTabWidget" name="tab_view">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>0</y>
+     <width>680</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="layoutDirection">
+    <enum>Qt::LeftToRight</enum>
+   </property>
+   <property name="tabShape">
+    <enum>QTabWidget::Rounded</enum>
+   </property>
+   <property name="currentIndex">
+    <number>5</number>
+   </property>
+   <property name="elideMode">
+    <enum>Qt::ElideLeft</enum>
+   </property>
+   <widget class="QWidget" name="tabSkillDataLua">
+    <property name="contextMenuPolicy">
+     <enum>Qt::NoContextMenu</enum>
+    </property>
+    <attribute name="title">
+     <string>Tab 1</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tabSkillIni">
+    <attribute name="title">
+     <string>页</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tabSkillCondition">
+    <attribute name="title">
+     <string>页</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tabSkillPresentation">
+    <attribute name="title">
+     <string>页</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tabPrtC">
+    <attribute name="title">
+     <string>页</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tabPrtP">
+    <attribute name="title">
+     <string>页</string>
+    </attribute>
+   </widget>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>48</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>配置预览</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -103,7 +103,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DLL_EXPORTS;_DEBUG;SKILLPROCESSER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_DLL_EXPORTS;_DEBUG;SKILLPROCESSER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -154,27 +154,35 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="pch.h" />
     <ClInclude Include="src\CEnvParams.h" />
     <ClInclude Include="src\CSingleton.h" />
-    <ClInclude Include="src\CSkillDataLuaProcesser.h" />
-    <ClInclude Include="src\CUnitProcesser.h" />
     <ClInclude Include="src\IDllExport.h" />
+    <ClInclude Include="src\processor\BaseDefine.h" />
+    <ClInclude Include="src\processor\CSkillConditionIniProcessor.h" />
+    <ClInclude Include="src\processor\CSkillDataLuaProcessor.h" />
+    <ClInclude Include="src\processor\CSkillIniProcessor.h" />
+    <ClInclude Include="src\processor\CSkillPresentationIniProcessor.h" />
+    <ClInclude Include="src\processor\CSkillPrtCProcessor.h" />
+    <ClInclude Include="src\processor\CSkillPrtPProcessor.h" />
+    <ClInclude Include="src\processor\CSkinSpDescribeProcessor.h" />
+    <ClInclude Include="src\processor\CUnitProcessor.h" />
+    <ClInclude Include="src\third\cjson\cJSON.h" />
     <ClInclude Include="src\tools\CommonFuncs.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="pch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="src\CEnvParams.cpp" />
     <ClCompile Include="src\CSingleton.cpp" />
-    <ClCompile Include="src\CSkillDataLuaProcesser.cpp" />
-    <ClCompile Include="src\CUnitProcesser.cpp" />
     <ClCompile Include="src\IDllExport.cpp" />
+    <ClCompile Include="src\processor\CSkillConditionIniProcessor.cpp" />
+    <ClCompile Include="src\processor\CSkillDataLuaProcessor.cpp" />
+    <ClCompile Include="src\processor\CSkillIniProcessor.cpp" />
+    <ClCompile Include="src\processor\CSkillPresentationIniProcessor.cpp" />
+    <ClCompile Include="src\processor\CSkillPrtCProcessor.cpp" />
+    <ClCompile Include="src\processor\CSkillPrtPProcessor.cpp" />
+    <ClCompile Include="src\processor\CSkinSpDescribeProcessor.cpp" />
+    <ClCompile Include="src\processor\CUnitProcessor.cpp" />
+    <ClCompile Include="src\third\cjson\cJSON.c" />
     <ClCompile Include="src\tools\CommonFuncs.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

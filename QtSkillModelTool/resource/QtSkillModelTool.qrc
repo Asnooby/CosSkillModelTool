@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/QtSkillModelTool">
+        <file>ConfigPreview.ui</file>
+        <file>QtSkillModelTool.ui</file>
+    </qresource>
+</RCC>

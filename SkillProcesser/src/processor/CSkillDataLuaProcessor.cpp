@@ -1,16 +1,14 @@
-#include "CSingleton.h"
-#include "CSkillDataLuaProcesser.h"
-#include "CEnvParams.h"
-#include "tools/CommonFuncs.h"
+#include "../CSingleton.h"
+#include "../CEnvParams.h"
+#include "../tools/CommonFuncs.h"
+#include "CSkillDataLuaProcessor.h"
 
-#define MAX_LINE_SIZE 1024
-
-CSkillDataLuaProcesser::CSkillDataLuaProcesser()
+CSkillDataLuaProcessor::CSkillDataLuaProcessor()
 {
 
 }
 
-void CSkillDataLuaProcesser::SetHeroId(std::string heroId)
+void CSkillDataLuaProcessor::SetHeroId(std::string heroId)
 {
 	std::string path = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + heroId + "_common/data/config/skilldata.lua";
 	m_skills.clear();
@@ -19,34 +17,24 @@ void CSkillDataLuaProcesser::SetHeroId(std::string heroId)
 	parseLuaDamageInfo(path, m_damages);
 }
 
-SKILL_MAP& CSkillDataLuaProcesser::GetSkills()
+SKILL_MAP& CSkillDataLuaProcessor::GetSkills()
 {
 	return m_skills;
 }
 
-void CSkillDataLuaProcesser::GetSkillData(std::string skillId, std::map<std::string, std::string>& outSkills, bool bWithAddition)
+void CSkillDataLuaProcessor::GetSkillData(std::string skillId, std::map<std::string, std::string>& outSkills)
 {
 	auto iter = m_skills.find(skillId);
 	if (iter != m_skills.end())
 	{
-		if (bWithAddition)
+		for (auto iterSkill = iter->second.begin(); iterSkill != iter->second.end(); iterSkill++)
 		{
-			for (auto iterSkill = iter->second.begin(); iterSkill != iter->second.end(); iterSkill++)
-			{
-				outSkills[iterSkill->second.id] = iterSkill->second.block;
-			}
-		}
-		else
-		{
-			if (iter->second.find(skillId) != iter->second.end())
-			{
-				outSkills[skillId] = iter->second[skillId].block;
-			}
+			outSkills[iterSkill->second.id] = iterSkill->second.block;
 		}
 	}
 }
 
-void CSkillDataLuaProcesser::GetDamageData(std::string skillId, std::map<std::string, std::string>& outSkills)
+void CSkillDataLuaProcessor::GetDamageData(std::string skillId, std::map<std::string, std::string>& outSkills)
 {
 	auto iter = m_damages.find(skillId);
 	if (iter != m_damages.end())
@@ -58,10 +46,35 @@ void CSkillDataLuaProcesser::GetDamageData(std::string skillId, std::map<std::st
 	}
 }
 
-std::string CSkillDataLuaProcesser::GetSkillTotalContent(std::string skillId)
+void CSkillDataLuaProcessor::GetSkillIds(std::string skillId, std::vector<std::string>& outSkills)
+{
+	auto iter = m_skills.find(skillId);
+	if (iter != m_skills.end())
+	{
+		for (auto iterSkill = iter->second.begin(); iterSkill != iter->second.end(); iterSkill++)
+		{
+			outSkills.push_back(iterSkill->second.id);
+		}
+	}
+	auto iterDamage = m_damages.find(skillId);
+	if (iterDamage != m_damages.end())
+	{
+		for (auto iterSkill = iterDamage->second.begin(); iterSkill != iterDamage->second.end(); iterSkill++)
+		{
+			outSkills.push_back(iterSkill->second.id);
+		}
+	}
+	auto iterUse = m_useSkills.find(skillId);
+	if (iterUse != m_useSkills.end())
+	{
+		outSkills.insert(outSkills.end(), iterUse->second.begin(), iterUse->second.end());
+	}
+}
+
+std::string CSkillDataLuaProcessor::GetSkillTotalContent(std::string skillId)
 {
 	std::map<std::string, std::string> skillData;
-	GetSkillData(skillId, skillData, true);
+	GetSkillData(skillId, skillData);
 	std::map<std::string, std::string> damageData;
 	GetDamageData(skillId, damageData);
 
@@ -99,7 +112,7 @@ std::string CSkillDataLuaProcesser::GetSkillTotalContent(std::string skillId)
 	return content;
 }
 
-void CSkillDataLuaProcesser::parseLuaSkillInfo(std::string path, SKILL_MAP& outCfg)
+void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outCfg)
 {
 	FILE* file;
 	fopen_s(&file, path.c_str(), "rb");
@@ -167,16 +180,42 @@ void CSkillDataLuaProcesser::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 				{
 					int index_1 = line.find("AghanimSkill");
 					index_1 = line.find("=", index_1);
-					auto str = line.substr(index_1 + 1, line.size() - index_1 - 1);
+					auto str = line.substr(index_1 + (int)1, line.size() - index_1 - 1);
 					str = SelectNumber(str.c_str());
 					mapMainSkill[str] = curNode.id;
+				}
+				else if (line.npos != line.find("skillSelectIDInfo"))
+				{
+					int index_1 = line.find("skillSelectIDInfo");
+					index_1 = line.find("=", index_1);
+					auto str = line.substr(index_1 + (int)1, line.size() - index_1 - 1);
+					auto vStr = split(str, ",");
+					for (auto& id : vStr)
+					{
+						id = SelectNumber(id);
+						if (!id.empty())
+						{
+							mapMainSkill[id] = curNode.id;
+						}
+					}
+				}
+				else if (line.npos != line.find("useskill"))
+				{
+					int index_1 = line.find("useskill");
+					index_1 = line.find("=", index_1);
+					auto str = line.substr(index_1 + (int)1, line.size() - index_1 - 1);
+					str = SelectNumber(str);
+					m_useSkills[curNode.id].insert(m_useSkills[curNode.id].end(), str);
 				}
 
 				if (line.npos != line.find("}]]"))
 				{
 					curNode.endLine = lineIndex;
 
-					outCfg[curNode.id][curNode.id] = curNode;
+					if (!CSingleton::gSkinSpDescribeProcessor.isSpecialSkillId(curNode.id))
+					{
+						outCfg[curNode.id][curNode.id] = curNode;
+					}
 					curNode.init();
 				}
 			}
@@ -207,7 +246,7 @@ void CSkillDataLuaProcesser::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 	}
 }
 
-void CSkillDataLuaProcesser::parseLuaDamageInfo(std::string path, SKILL_MAP& outCfg)
+void CSkillDataLuaProcessor::parseLuaDamageInfo(std::string path, SKILL_MAP& outCfg)
 {
 	FILE* file;
 	fopen_s(&file, path.c_str(), "rb");
@@ -246,7 +285,7 @@ void CSkillDataLuaProcesser::parseLuaDamageInfo(std::string path, SKILL_MAP& out
 			if (line.npos != line.find("mainid"))
 			{
 				curNode.id = line.substr(line.find("[") + 1, line.find("]") - line.find("[") - 1);
-				curNode.block = "";
+				curNode.block = line;
 				curNode.endLine = -1;
 				curNode.startLine = lineIndex;
 

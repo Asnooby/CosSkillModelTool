@@ -39,6 +39,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>../SkillProcesser;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
+  </PropertyGroup>
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
     <Import Project="$(QtMsBuild)\qt_defaults.props" />
   </ImportGroup>
@@ -82,8 +85,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <QtRcc Include="QtSkillModelTool.qrc" />
-    <QtUic Include="QtSkillModelTool.ui" />
+    <ClCompile Include="src\QtConfigPreview.cpp" />
     <QtMoc Include="QtSkillModelTool.h" />
     <ClCompile Include="QtSkillModelTool.cpp" />
     <ClCompile Include="main.cpp" />
@@ -92,6 +94,16 @@
     <ProjectReference Include="..\SkillProcesser\SkillProcesser.vcxproj">
       <Project>{ef16ffdb-69a4-48cf-8ec8-4876dc44c271}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="resource\ConfigPreview.ui" />
+    <QtUic Include="resource\QtSkillModelTool.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="resource\QtSkillModelTool.qrc" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\QtConfigPreview.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

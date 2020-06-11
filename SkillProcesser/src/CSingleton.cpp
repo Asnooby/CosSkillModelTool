@@ -2,8 +2,14 @@
 #include "CSingleton.h"
 
 CEnvParams CSingleton::gEnvParams;
-CUnitProcesser CSingleton::gUnitProcesser;
-CSkillDataLuaProcesser CSingleton::CSingleton::gSkillDataLuaProcesser;
+CUnitProcessor CSingleton::gUnitProcessor;
+CSkillIniProcessor CSingleton::gSkillIniProcessor;
+CSkillPrtCProcessor CSingleton::gSkillPrtCProcessor;
+CSkillPrtPProcessor CSingleton::gSkillPrtPProcessor;
+CSkillDataLuaProcessor CSingleton::gSkillDataLuaProcesser;
+CSkinSpDescribeProcessor CSingleton::gSkinSpDescribeProcessor;
+CSkillConditionIniProcessor CSingleton::gSkillConditionIniProcessor;
+CSkillPresentationIniProcessor CSingleton::gSkillPresentationIniProcessor;
 
 CSingleton::CSingleton()
 {

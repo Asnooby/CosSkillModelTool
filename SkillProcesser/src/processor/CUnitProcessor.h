@@ -1,15 +1,14 @@
 #pragma once
 
+#include "../IDllExport.h"
 #include <string>
 #include <map>
 #include <vector>
 
-#include "IDllExport.h"
-
-class DLL_API CUnitProcesser
+class DLL_API CUnitProcessor
 {
 public:
-	CUnitProcesser();
+	CUnitProcessor();
 
 public:
 	void SetHeroPackageRoot(std::string path);

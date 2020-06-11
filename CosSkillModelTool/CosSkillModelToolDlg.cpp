@@ -8,8 +8,8 @@
 #include "CosSkillModelToolDlg.h"
 #include "afxdialogex.h"
 #include "src/CSingleton.h"
-#include "src/CUnitProcesser.h"
-#include "src/CSkillDataLuaProcesser.h"
+#include "src/processor/CUnitProcessor.h"
+#include "src/processor/CSkillDataLuaProcessor.h"
 #include "src/tools/CommonFuncs.h"
 #include <algorithm>
 #include <functional>
@@ -166,7 +166,7 @@ void CCosSkillModelToolDlg::OnEnChangeEditProject()
 
 void CCosSkillModelToolDlg::OnBnClickedButton1()
 {
-	CSingleton::gUnitProcesser.SetHeroPackageRoot(CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/");
+	CSingleton::gUnitProcessor.SetHeroPackageRoot(CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/");
 	refreshHeroList();
 }
 
@@ -221,10 +221,10 @@ void CCosSkillModelToolDlg::refreshHeroList()
 	}
 
 	//std::string filter;
-	auto heros = CSingleton::gUnitProcesser.getHeros();
+	auto heros = CSingleton::gUnitProcessor.getHeros();
 	for (auto iter = heros.begin(); iter != heros.end(); iter++)
 	{
-		auto skins = CSingleton::gUnitProcesser.getSkins(iter->first);
+		auto skins = CSingleton::gUnitProcessor.getSkins(iter->first);
 		std::string protoSkin;
 		for (auto iterSkin = skins.begin(); iterSkin != skins.end(); iterSkin++)
 		{
@@ -238,7 +238,7 @@ void CCosSkillModelToolDlg::refreshHeroList()
 		{
 			protoSkin = skins[0];
 		}
-		auto protoSkinName = CSingleton::gUnitProcesser.getSkinName(protoSkin);
+		auto protoSkinName = CSingleton::gUnitProcessor.getSkinName(protoSkin);
 
 		m_ctrlListHeros.AddString(CString((iter->first + " | " + protoSkinName).c_str()));
 		/*
@@ -266,10 +266,10 @@ void CCosSkillModelToolDlg::refreshSkinList(std::string heroId)
 		m_ctrlListSkins.DeleteString(i);
 	}
 
-	auto skins = CSingleton::gUnitProcesser.getSkins(heroId);
+	auto skins = CSingleton::gUnitProcessor.getSkins(heroId);
 	for (auto iter = skins.begin(); iter != skins.end(); iter++)
 	{
-		auto protoSkinName = CSingleton::gUnitProcesser.getSkinName(iter->c_str());
+		auto protoSkinName = CSingleton::gUnitProcessor.getSkinName(iter->c_str());
 		protoSkinName = *iter + " | " + protoSkinName;
 		m_ctrlListSkins.AddString(CString(protoSkinName.c_str()));
 	}

@@ -1,15 +1,17 @@
 #include <string>
+#include <vector>
 #include <io.h>
 #include "CommonFuncs.h"
 
-extern "C" DLL_API bool isNumber(char& c)
+
+bool isNumber(char& c)
 {
 	return '0' <= c && '9' >= c;
 }
 
-extern "C" DLL_API std::string SelectNumber(std::string input)
+string SelectNumber(string input)
 {
-	std::string str;
+	string str;
 	for (auto iter = input.begin(); iter != input.end(); iter++)
 	{
 		if (isNumber(*iter) || '.' == *iter)
@@ -21,9 +23,9 @@ extern "C" DLL_API std::string SelectNumber(std::string input)
 	return str;
 }
 
-extern "C" DLL_API std::string DeepFindInDir(std::string path, std::string key)
+string DeepFindInDir(string path, string key)
 {
-	std::string ret;
+	string ret;
 	struct __finddata64_t fileinfoSkinName;
 	_int64 handle = _findfirst64((path + "*").c_str(), &fileinfoSkinName);
 	if (-1 != handle)
@@ -35,8 +37,8 @@ extern "C" DLL_API std::string DeepFindInDir(std::string path, std::string key)
 				continue;
 			}
 
-			std::string strName = fileinfoSkinName.name;
-			if (std::string::npos != strName.find(key))
+			string strName = fileinfoSkinName.name;
+			if (string::npos != strName.find(key))
 			{
 				ret = path + strName;
 				break;
@@ -55,4 +57,147 @@ extern "C" DLL_API std::string DeepFindInDir(std::string path, std::string key)
 	}
 
 	return ret;
+}
+
+bool readFileLines(const string path, vector<string>& lines)
+{
+	FILE* file;
+	fopen_s(&file, path.c_str(), "rb");
+	if (file)
+	{
+		char pBuffer[MAX_LINE_SIZE];
+		memset(pBuffer, MAX_LINE_SIZE, 0);
+		while (fgets(pBuffer, MAX_LINE_SIZE, file))
+		{
+			lines.push_back(pBuffer);
+			memset(pBuffer, MAX_LINE_SIZE, 0);
+		}
+		fclose(file);
+		return true;
+	}
+	return false;
+}
+
+vector<string> split(const string& s, const string& seperator) {
+	vector<string> result;
+	typedef string::size_type string_size;
+	string_size i = 0;
+
+	while (i != s.size()) {
+		int flag = 0;
+		while (i != s.size() && flag == 0) {
+			flag = 1;
+			for (string_size x = 0; x < seperator.size(); ++x)
+				if (s[i] == seperator[x]) {
+					++i;
+					flag = 0;
+					break;
+				}
+		}
+
+		flag = 0;
+		string_size j = i;
+		while (j != s.size() && flag == 0) {
+			for (string_size x = 0; x < seperator.size(); ++x)
+				if (s[j] == seperator[x]) {
+					flag = 1;
+					break;
+				}
+			if (flag == 0)
+				++j;
+		}
+		if (i != j) {
+			result.push_back(s.substr(i, j - i));
+			i = j;
+		}
+	}
+	return result;
+}
+
+void parseIniCfg(const string path, map<string, SKILL_BLOCK>& outCfg)
+{
+	vector<string> lines;
+	if (readFileLines(path, lines) && !lines.empty())
+	{
+		SKILL_BLOCK curNode;
+		unsigned int lineIndex = 0;
+		for (auto& line : lines)
+		{
+			if (';' == line[0] || 0 == line.substr(0, 2).compare("//") || 0 == line.substr(0, 2).compare("\\\\"))
+				continue;
+
+			if ('[' == line[0] && line.npos != line.find(']'))
+			{
+				if (!curNode.id.empty())
+				{
+					curNode.endLine = lineIndex - 1;
+					while (0 == lines[curNode.endLine].compare("\r") || 0 == lines[curNode.endLine].compare("\n") || 0 == lines[curNode.endLine].compare("\r\n"))
+						curNode.endLine = curNode.endLine - 1;
+					outCfg[curNode.id] = curNode;
+				}
+				curNode.init();
+				curNode.startLine = lineIndex;
+				curNode.id = line.substr(line.find('[') + 1, line.find(']') - line.find('[') - 1);
+			}
+			else if (!curNode.id.empty())
+			{
+				if (!line.empty())
+				{
+					curNode.block += line;
+				}
+			}
+
+			lineIndex++;
+		}
+		if (!curNode.id.empty())
+		{
+			curNode.endLine = lineIndex - 1;
+			while (0 == lines[curNode.endLine].compare("\r") || 0 == lines[curNode.endLine].compare("\n") || 0 == lines[curNode.endLine].compare("\r\n"))
+				curNode.endLine = curNode.endLine - 1;
+			outCfg[curNode.id] = curNode;
+		}
+	}
+}
+
+void parseXmlCfg(const string path, const string tag, map<string, SKILL_BLOCK>& outCfg)
+{
+	vector<string> lines;
+	if (readFileLines(path, lines) && !lines.empty())
+	{
+		SKILL_BLOCK curNode;
+		unsigned int lineIndex = 0;
+		for (auto& line : lines)
+		{
+			if (line.npos != line.find("<" + tag + " "))
+			{
+				curNode.init();
+				curNode.startLine = lineIndex;
+				auto index_1 = line.find('name');
+				if (line.npos != index_1)
+				{
+					index_1 = line.find('"', index_1 + 1);
+					auto index_2 = line.find('"', index_1 + 1);
+					curNode.id = line.substr(index_1 + 1, index_2 - index_1 - 1);
+					curNode.block += line;
+				}
+			}
+			else if (!curNode.id.empty())
+			{
+				if (!line.empty())
+				{
+					curNode.block += line;
+
+					if (line.npos != line.find("/" + tag + ">"))
+					{
+						curNode.endLine = lineIndex - 1;
+						while (0 == lines[curNode.endLine].compare("\r") || 0 == lines[curNode.endLine].compare("\n") || 0 == lines[curNode.endLine].compare("\r\n"))
+							curNode.endLine = curNode.endLine - 1;
+						outCfg[curNode.id] = curNode;
+					}
+				}
+			}
+
+			lineIndex++;
+		}
+	}
 }
