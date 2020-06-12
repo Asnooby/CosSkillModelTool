@@ -18,3 +18,12 @@ typedef struct
 		block.clear();
 	}
 } SKILL_BLOCK;
+
+typedef struct
+{
+	std::string heroId;
+	std::string skinId;
+	std::string skinName;
+	std::string skillId;
+	std::string skillName;
+} MODEL_INFO;

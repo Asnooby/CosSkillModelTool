@@ -86,6 +86,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\QtConfigPreview.cpp" />
+    <ClCompile Include="src\QtSkillModelGenerate.cpp" />
     <QtMoc Include="QtSkillModelTool.h" />
     <ClCompile Include="QtSkillModelTool.cpp" />
     <ClCompile Include="main.cpp" />
@@ -97,6 +98,7 @@
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="resource\ConfigPreview.ui" />
+    <QtUic Include="resource\QtSkillModelGenerate.ui" />
     <QtUic Include="resource\QtSkillModelTool.ui" />
   </ItemGroup>
   <ItemGroup>
@@ -104,6 +106,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="src\QtConfigPreview.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="src\QtSkillModelGenerate.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

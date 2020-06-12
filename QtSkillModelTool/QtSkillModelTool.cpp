@@ -5,6 +5,7 @@
 #include "src/tools/CommonFuncs.h"
 #include "qstringlist.h"
 #include "qstringlistmodel.h"
+#include "src/QtSkillModelGenerate.h"
 
 QtSkillModelTool::QtSkillModelTool(QWidget *parent)
     : QMainWindow(parent)
@@ -18,6 +19,7 @@ QtSkillModelTool::QtSkillModelTool(QWidget *parent)
 void QtSkillModelTool::bindSignalEvent()
 {
     connect(ui.btnConfirm, SIGNAL(clicked()), this, SLOT(onClickButtonBtnConfirm()));
+	connect(ui.btn_generate, SIGNAL(clicked()), this, SLOT(onClickButtonBtnGenerate()));
 	connect(ui.list_view_heros, SIGNAL(clicked(QModelIndex)), this, SLOT(onListViewHerosIndexMoved(QModelIndex)));
 	connect(ui.list_view_skins, SIGNAL(clicked(QModelIndex)), this, SLOT(onListViewSkinsIndexMoved(QModelIndex)));
 	connect(ui.list_view_skills, SIGNAL(clicked(QModelIndex)), this, SLOT(onListViewSkillsIndexMoved(QModelIndex)));
@@ -108,6 +110,56 @@ void QtSkillModelTool::onClickButtonBtnConfirm()
 	CSingleton::gSkinSpDescribeProcessor.init(CSingleton::gEnvParams.strProjectPath + "/Debug/data/config/skinspdescribe.json");
     CSingleton::gUnitProcessor.SetHeroPackageRoot(CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/");
 	refreshHeroList();
+}
+
+void QtSkillModelTool::onClickButtonBtnGenerate()
+{
+	auto generator = new QtSkillModelGenerate();
+	generator->show();
+
+	MODEL_INFO info;
+
+	QStringListModel* pSlm = (QStringListModel*)ui.list_view_heros->model();
+	if (pSlm)
+	{
+		QVariant variant = pSlm->data(ui.list_view_heros->currentIndex(), Qt::DisplayRole);
+		if (variant.isValid())
+		{
+			auto skinIdAndName = variant.toString().toStdString();
+			auto index = skinIdAndName.find("|");
+			if (skinIdAndName.npos != index)
+			{
+				info.heroId = skinIdAndName.substr(0, index - 1);
+			}
+		}
+	}
+
+	pSlm = (QStringListModel*)ui.list_view_skins->model();
+	if (pSlm)
+	{
+		QVariant variant = pSlm->data(ui.list_view_skins->currentIndex(), Qt::DisplayRole);
+		if (variant.isValid())
+		{
+			auto skinIdAndName = variant.toString().toStdString();
+			auto index = skinIdAndName.find("|");
+			if (skinIdAndName.npos != index)
+			{
+				info.skinId = skinIdAndName.substr(0, index - 1);
+				info.skinName = skinIdAndName.substr(index + 1, skinIdAndName.length() - index);
+			}
+		}
+	}
+
+	pSlm = (QStringListModel*)ui.list_view_skills->model();
+	if (pSlm)
+	{
+		QVariant variant = pSlm->data(ui.list_view_skills->currentIndex(), Qt::DisplayRole);
+		if (variant.isValid())
+		{
+			info.skillId = variant.toString().toStdString();
+		}
+	}
+	generator->SetModelInfo(info);
 }
 
 void QtSkillModelTool::onListViewHerosIndexMoved(QModelIndex index)

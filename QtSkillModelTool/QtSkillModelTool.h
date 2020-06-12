@@ -24,6 +24,7 @@ private:
 
 private slots:
     void onClickButtonBtnConfirm();
+    void onClickButtonBtnGenerate();
     void onListViewHerosIndexMoved(QModelIndex index);
     void onListViewSkinsIndexMoved(QModelIndex index);
     void onListViewSkillsIndexMoved(QModelIndex index);

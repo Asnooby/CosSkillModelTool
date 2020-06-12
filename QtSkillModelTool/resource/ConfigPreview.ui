@@ -38,7 +38,7 @@
     <number>720</number>
    </property>
    <property name="tabStopWidth">
-    <number>20</number>
+    <number>12</number>
    </property>
   </widget>
   <widget class="QTabWidget" name="tab_view">

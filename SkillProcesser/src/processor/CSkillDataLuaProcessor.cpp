@@ -4,6 +4,10 @@
 #include "CSkillDataLuaProcessor.h"
 
 CSkillDataLuaProcessor::CSkillDataLuaProcessor()
+	: m_nSkillStartLine(-1)
+	, m_nSkillEndLine(-1)
+	, m_nDamageStartLine(-1)
+	, m_nDamageEndLine(-1)
 {
 
 }
@@ -22,26 +26,83 @@ SKILL_MAP& CSkillDataLuaProcessor::GetSkills()
 	return m_skills;
 }
 
-void CSkillDataLuaProcessor::GetSkillData(std::string skillId, std::map<std::string, std::string>& outSkills)
+void CSkillDataLuaProcessor::GetSkillData(std::string skillId, std::map<std::string, std::string>& outSkills, std::string newSkillId/* = ""*/)
 {
 	auto iter = m_skills.find(skillId);
 	if (iter != m_skills.end())
 	{
 		for (auto iterSkill = iter->second.begin(); iterSkill != iter->second.end(); iterSkill++)
 		{
-			outSkills[iterSkill->second.id] = iterSkill->second.block;
+			auto SubSkillId = iterSkill->second.id;
+			auto content = iterSkill->second.block;
+
+			if (!newSkillId.empty())
+			{
+				SubSkillId = std::to_string(getValueByBase(skillId, iterSkill->second.id, newSkillId));
+
+				replace_str(content, "[" + iterSkill->second.id + "]", "[" + SubSkillId + "]");
+
+				auto index_1 = content.find("AghanimSkill");
+				if (std::string::npos != index_1)
+				{
+					auto index_2 = content.find("=", index_1 + 1);
+					auto index_3 = content.find(",", index_2 + 1);
+					auto strAghId = content.substr(index_2 + 1, index_3 - index_2 );
+					strAghId = SelectNumber(strAghId);
+					int nAghId = getValueByBase(skillId, strAghId, newSkillId);
+					auto contentSrc = content.substr(index_1 + 1, index_3 - index_1);
+					string contentNew = "AghanimSkill = " + std::to_string(nAghId);
+					replace_str(content, contentSrc, contentNew);
+				}
+
+				index_1 = content.find("damageMergeId");
+				if (std::string::npos != index_1)
+				{
+					auto index_2 = content.find("=", index_1 + 1);
+					auto index_3 = content.find(",", index_2 + 1);
+					auto strMergeId = content.substr(index_2 + 1, index_3 - index_2);
+					strMergeId = SelectNumber(strMergeId);
+					int nMergeId = getValueByBase(skillId, strMergeId, newSkillId);
+					auto contentSrc = content.substr(index_1 + 1, index_3 - index_1);
+					string contentNew = "damageMergeId = " + std::to_string(nMergeId);
+					replace_str(content, contentSrc, contentNew);
+				}
+			}
+			outSkills[SubSkillId] = content;
 		}
 	}
 }
 
-void CSkillDataLuaProcessor::GetDamageData(std::string skillId, std::map<std::string, std::string>& outSkills)
+void CSkillDataLuaProcessor::GetDamageData(std::string skillId, std::map<std::string, std::string>& outSkills, std::string newSkillId/* = ""*/)
 {
 	auto iter = m_damages.find(skillId);
 	if (iter != m_damages.end())
 	{
 		for (auto iterSkill = iter->second.begin(); iterSkill != iter->second.end(); iterSkill++)
 		{
-			outSkills[iterSkill->second.id] = iterSkill->second.block;
+			auto SubSkillId = iterSkill->second.id;
+			auto content = iterSkill->second.block;
+
+			if (!newSkillId.empty())
+			{
+				SubSkillId = std::to_string(getValueByBase(skillId, iterSkill->second.id, newSkillId));
+
+				replace_str(content, "[" + iterSkill->second.id + "]", "[" + SubSkillId + "]");
+
+				auto index_1 = content.find("mainid");
+				if (std::string::npos != index_1)
+				{
+					auto index_2 = content.find("=", index_1 + 1);
+					auto index_3 = content.find(",", index_2 + 1);
+					auto strMainId = content.substr(index_2 + 1, index_3 - index_2);
+					strMainId = SelectNumber(strMainId);
+					int nNewMainId = getValueByBase(skillId, strMainId, newSkillId);
+					auto contentSrc = content.substr(index_1 + 1, index_3 - index_1);
+					string contentNew = "mainid = " + std::to_string(nNewMainId);
+					replace_str(content, contentSrc, contentNew);
+				}
+			}
+			outSkills[SubSkillId] = content;
 		}
 	}
 }
@@ -112,6 +173,56 @@ std::string CSkillDataLuaProcessor::GetSkillTotalContent(std::string skillId)
 	return content;
 }
 
+std::string CSkillDataLuaProcessor::GenerateTotalContent(std::string heroId, std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject)
+{
+	std::string path = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + heroId + "_common/data/config/skilldata.lua";
+
+	vector<string> lines;
+	readFileLines(path, lines);
+
+	if (-1 == m_nSkillEndLine)
+	{
+		lines.push_back("local skillInfo = {\r\n'");
+		lines.push_back("\r\n'");
+		lines.push_back("}\r\n'");
+		m_nSkillStartLine = 0;
+		m_nSkillEndLine = 2;
+	}
+	if (-1 == m_nDamageEndLine)
+	{
+		lines.push_back("\r\n'");
+		lines.push_back("local damageInfo = {\r\n'");
+		lines.push_back("\r\n'");
+		lines.push_back("}\r\n'");
+		m_nDamageStartLine = m_nSkillEndLine + 2;
+		m_nDamageEndLine = m_nSkillEndLine + 4;
+	}
+
+	for (auto iter = damagesInject.begin(); iter != damagesInject.end(); iter++)
+	{
+		if (m_damages.find(iter->first) == m_damages.end())
+		{
+			lines.insert(lines.begin() + m_nDamageEndLine, iter->second);
+		}
+	}
+
+	for (auto iter = skillsInject.begin(); iter != skillsInject.end(); iter++)
+	{
+		if (m_skills.find(iter->first) == m_skills.end())
+		{
+			lines.insert(lines.begin() + m_nSkillEndLine, iter->second);
+		}
+	}
+
+	std::string content;
+	for (auto& line : lines)
+	{
+		content += line;
+	}
+
+	return content;
+}
+
 void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outCfg)
 {
 	FILE* file;
@@ -119,8 +230,8 @@ void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 	if (file)
 	{
 		std::map< std::string, std::string > mapMainSkill;
-		int startLine = -1;
-		int endLine = -1;
+		m_nSkillStartLine = -1;
+		m_nSkillEndLine = -1;
 		SKILL_BLOCK curNode;
 		char pBuffer[MAX_LINE_SIZE];
 		memset(pBuffer, MAX_LINE_SIZE, 0);
@@ -132,7 +243,7 @@ void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 			std::string line = pBuffer;
 			if (std::string::npos != line.find("local skillInfo = {"))
 			{
-				startLine = lineIndex;
+				m_nSkillStartLine = lineIndex;
 				nBrakets = std::count(line.begin(), line.end(), '{');
 			}
 			else
@@ -142,7 +253,7 @@ void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 					nBrakets = nBrakets + std::count(line.begin(), line.end(), '{') - std::count(line.begin(), line.end(), '}');
 					if (0 == nBrakets)
 					{
-						endLine = lineIndex;
+						m_nSkillEndLine = lineIndex;
 						break;
 					}
 				}
@@ -253,8 +364,8 @@ void CSkillDataLuaProcessor::parseLuaDamageInfo(std::string path, SKILL_MAP& out
 	if (file)
 	{
 		std::map< std::string, std::string > mapMainSkill;
-		int startLine = -1;
-		int endLine = -1;
+		m_nDamageStartLine = -1;
+		m_nDamageEndLine = -1;
 		SKILL_BLOCK curNode;
 		char pBuffer[MAX_LINE_SIZE];
 		memset(pBuffer, MAX_LINE_SIZE, 0);
@@ -266,7 +377,7 @@ void CSkillDataLuaProcessor::parseLuaDamageInfo(std::string path, SKILL_MAP& out
 			std::string line = pBuffer;
 			if (std::string::npos != line.find("local damageInfo = {"))
 			{
-				startLine = lineIndex;
+				m_nDamageStartLine = lineIndex;
 				nBrakets = std::count(line.begin(), line.end(), '{');
 			}
 			else
@@ -276,7 +387,7 @@ void CSkillDataLuaProcessor::parseLuaDamageInfo(std::string path, SKILL_MAP& out
 					nBrakets = nBrakets + std::count(line.begin(), line.end(), '{') - std::count(line.begin(), line.end(), '}');
 					if (0 == nBrakets)
 					{
-						endLine = lineIndex;
+						m_nDamageEndLine = lineIndex;
 						break;
 					}
 				}
