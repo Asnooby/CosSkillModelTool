@@ -1,11 +1,12 @@
 #pragma once
 
+#include "CFileBase.h"
 #include "../IDllExport.h"
 #include <string>
 #include <map>
 #include <vector>
 
-class DLL_API CSkinSpDescribeProcessor
+class DLL_API CSkinSpDescribeProcessor : public CFileBase
 {
 public:
 	CSkinSpDescribeProcessor();

@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <io.h>
+#include <direct.h>
 #include "CommonFuncs.h"
 
 
@@ -59,18 +60,39 @@ string DeepFindInDir(string path, string key)
 	return ret;
 }
 
-bool readFileLines(const string path, vector<string>& lines)
+bool readFileLines(const string path, vector<string>& lines, unsigned int nSizeHeader/* = 0*/)
 {
 	FILE* file;
 	fopen_s(&file, path.c_str(), "rb");
 	if (file)
 	{
+		fseek(file, nSizeHeader, SEEK_SET);
 		char pBuffer[MAX_LINE_SIZE];
 		memset(pBuffer, MAX_LINE_SIZE, 0);
 		while (fgets(pBuffer, MAX_LINE_SIZE, file))
 		{
 			lines.push_back(pBuffer);
 			memset(pBuffer, MAX_LINE_SIZE, 0);
+		}
+		fclose(file);
+		return true;
+	}
+	return false;
+}
+
+bool readWideFileLines(const wstring path, vector<wstring>& lines, unsigned int nSizeHeader/* = 0*/)
+{
+	FILE* file;
+	_wfopen_s(&file, path.c_str(), L"rb,ccs=UNICODE");
+	if (file)
+	{
+		fseek(file, nSizeHeader, SEEK_SET);
+		wchar_t pBuffer[MAX_LINE_SIZE];
+		memset(pBuffer, MAX_LINE_SIZE * sizeof(wchar_t), 0);
+		while (fgetws(pBuffer, MAX_LINE_SIZE, file))
+		{
+			lines.push_back(pBuffer);
+			memset(pBuffer, MAX_LINE_SIZE * sizeof(wchar_t), 0);
 		}
 		fclose(file);
 		return true;
@@ -114,10 +136,9 @@ vector<string> split(const string& s, const string& seperator) {
 	return result;
 }
 
-void parseIniCfg(const string path, map<string, SKILL_BLOCK>& outCfg)
+void parseIniCfg(const std::vector<std::string>& lines, map<string, SKILL_BLOCK>& outCfg)
 {
-	vector<string> lines;
-	if (readFileLines(path, lines) && !lines.empty())
+	if (!lines.empty())
 	{
 		SKILL_BLOCK curNode;
 		unsigned int lineIndex = 0;
@@ -159,10 +180,9 @@ void parseIniCfg(const string path, map<string, SKILL_BLOCK>& outCfg)
 	}
 }
 
-void parseXmlCfg(const string path, const string tag, map<string, SKILL_BLOCK>& outCfg)
+void parseXmlCfg(const std::vector<std::string>& lines, const string tag, map<string, SKILL_BLOCK>& outCfg)
 {
-	vector<string> lines;
-	if (readFileLines(path, lines) && !lines.empty())
+	if (!lines.empty())
 	{
 		SKILL_BLOCK curNode;
 		unsigned int lineIndex = 0;
@@ -172,7 +192,7 @@ void parseXmlCfg(const string path, const string tag, map<string, SKILL_BLOCK>& 
 			{
 				curNode.init();
 				curNode.startLine = lineIndex;
-				auto index_1 = line.find('name');
+				auto index_1 = line.find("name");
 				if (line.npos != index_1)
 				{
 					index_1 = line.find('"', index_1 + 1);
@@ -217,4 +237,32 @@ void replace_str(std::string& str, const std::string& before, const std::string&
 		else
 			break;
 	}
+}
+
+bool createDirectory(const string folder)
+{
+	std::string folder_builder;
+	std::string sub;
+	sub.reserve(folder.size());
+	for (auto it = folder.begin(); it != folder.end(); ++it)
+	{
+		//cout << *(folder.end()-1) << endl;
+		const char c = *it;
+		sub.push_back(c);
+		if (c == '\\' || c == '/' || it == folder.end() - 1)
+		{
+			folder_builder.append(sub);
+			if (0 != ::_access(folder_builder.c_str(), 0))
+			{
+				// this folder not exist
+				if (0 != ::_mkdir(folder_builder.c_str()))
+				{
+					// create failed
+					return false;
+				}
+			}
+			sub.clear();
+		}
+	}
+	return true;
 }

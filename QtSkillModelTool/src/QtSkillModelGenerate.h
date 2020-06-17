@@ -24,6 +24,7 @@ public:
 private:
     void bindSignalEvent();
     void initUI();
+    void setModelInfo(std::string heroId, std::string skinId, std::string skinName);
 
 private slots:
     void onBtnGenerateClicked();
@@ -33,6 +34,7 @@ private:
     Ui::QtSkillModelGenerate ui;
     QtConfigPreview* m_pPreview;
     MODEL_INFO m_info;
+    MODEL_INFO m_infoGenerate;
 
     CSkillIniProcessor m_SkillIniProcessor;
     CSkillPrtCProcessor m_SkillPrtCProcessor;

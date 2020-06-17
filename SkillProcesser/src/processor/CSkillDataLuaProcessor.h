@@ -1,5 +1,6 @@
 #pragma once
 
+#include "CFileBase.h"
 #include "../IDllExport.h"
 #include <string>
 #include <map>
@@ -8,7 +9,7 @@
 #include "BaseDefine.h"
 
 typedef std::map<std::string, std::map<std::string, SKILL_BLOCK> > SKILL_MAP;
-class DLL_API CSkillDataLuaProcessor
+class DLL_API CSkillDataLuaProcessor : public CFileBase
 {
 public:
 	CSkillDataLuaProcessor();
@@ -21,11 +22,12 @@ public:
 	void GetSkillIds(std::string skillId, std::vector<std::string>& outSkills);
 	std::string GetSkillTotalContent(std::string skillId);
 
-	std::string GenerateTotalContent(std::string heroId, std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject);
+	std::string GenerateTotalContent(std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject);
+	void ExportGeneratedTotalContent(std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject);
 
 protected:
-	void parseLuaSkillInfo(std::string path, SKILL_MAP& outCfg);
-	void parseLuaDamageInfo(std::string path, SKILL_MAP& outCfg);
+	void parseLuaSkillInfo(const std::vector<std::string>& lines, SKILL_MAP& outCfg);
+	void parseLuaDamageInfo(const std::vector<std::string>& lines, SKILL_MAP& outCfg);
 
 private:
 	std::map<std::string, std::set<std::string> > m_useSkills;

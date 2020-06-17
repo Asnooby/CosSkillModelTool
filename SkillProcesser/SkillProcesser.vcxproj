@@ -158,6 +158,7 @@
     <ClInclude Include="src\CSingleton.h" />
     <ClInclude Include="src\IDllExport.h" />
     <ClInclude Include="src\processor\BaseDefine.h" />
+    <ClInclude Include="src\processor\CFileBase.h" />
     <ClInclude Include="src\processor\CSkillConditionIniProcessor.h" />
     <ClInclude Include="src\processor\CSkillDataLuaProcessor.h" />
     <ClInclude Include="src\processor\CSkillIniProcessor.h" />
@@ -167,6 +168,7 @@
     <ClInclude Include="src\processor\CSkinSpDescribeProcessor.h" />
     <ClInclude Include="src\processor\CUnitProcessor.h" />
     <ClInclude Include="src\third\cjson\cJSON.h" />
+    <ClInclude Include="src\tools\CodeSwitcher.h" />
     <ClInclude Include="src\tools\CommonFuncs.h" />
   </ItemGroup>
   <ItemGroup>
@@ -174,6 +176,7 @@
     <ClCompile Include="src\CEnvParams.cpp" />
     <ClCompile Include="src\CSingleton.cpp" />
     <ClCompile Include="src\IDllExport.cpp" />
+    <ClCompile Include="src\processor\CFileBase.cpp" />
     <ClCompile Include="src\processor\CSkillConditionIniProcessor.cpp" />
     <ClCompile Include="src\processor\CSkillDataLuaProcessor.cpp" />
     <ClCompile Include="src\processor\CSkillIniProcessor.cpp" />
@@ -183,6 +186,7 @@
     <ClCompile Include="src\processor\CSkinSpDescribeProcessor.cpp" />
     <ClCompile Include="src\processor\CUnitProcessor.cpp" />
     <ClCompile Include="src\third\cjson\cJSON.c" />
+    <ClCompile Include="src\tools\CodeSwitcher.cpp" />
     <ClCompile Include="src\tools\CommonFuncs.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

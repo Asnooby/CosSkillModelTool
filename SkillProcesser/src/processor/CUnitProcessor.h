@@ -1,11 +1,12 @@
 #pragma once
 
+#include "CFileBase.h"
 #include "../IDllExport.h"
 #include <string>
 #include <map>
 #include <vector>
 
-class DLL_API CUnitProcessor
+class DLL_API CUnitProcessor : public CFileBase
 {
 public:
 	CUnitProcessor();

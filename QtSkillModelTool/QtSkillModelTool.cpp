@@ -146,6 +146,7 @@ void QtSkillModelTool::onClickButtonBtnGenerate()
 			{
 				info.skinId = skinIdAndName.substr(0, index - 1);
 				info.skinName = skinIdAndName.substr(index + 1, skinIdAndName.length() - index);
+				info.skinName.erase(std::remove_if(info.skinName.begin(), info.skinName.end(), [&](char c) { return c == ' '; }), info.skinName.end());
 			}
 		}
 	}
@@ -222,7 +223,7 @@ void QtSkillModelTool::setSelectSkin(std::string idAndName)
 	CSingleton::gSkillPresentationIniProcessor.SetSkinId(skinId);
 
 	auto skinPath = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + skinId + "/presentations/";
-	auto pathPrtC = DeepFindInDir(skinPath, "_c.prt");
+	std::string pathPrtC = DeepFindInDir(skinPath, "_c.prt");
 	auto prtNameC = pathPrtC;
 	if (!prtNameC.empty())
 	{
@@ -230,7 +231,7 @@ void QtSkillModelTool::setSelectSkin(std::string idAndName)
 		auto index = prtNameC.rfind("/");
 		prtNameC = prtNameC.substr(index + 1, prtNameC.length() - index - 1);
 	}
-	auto pathPrtP = DeepFindInDir(skinPath, "_p.prt");
+	std::string pathPrtP = DeepFindInDir(skinPath, "_p.prt");
 	auto prtNameP = pathPrtP;
 	if (!prtNameP.empty())
 	{

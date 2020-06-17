@@ -10,10 +10,11 @@ CSkillPrtCProcessor::CSkillPrtCProcessor()
 
 }
 
-void CSkillPrtCProcessor::SetPath(std::string path)
+void CSkillPrtCProcessor::SetPath(const std::string path, bool createIfNotExist/* = false*/)
 {
+	CFileBase::SetPath(path, createIfNotExist);
 	m_skills.clear();
-	parseXmlCfg(path, "SkillPresentation", m_skills);
+	parseXmlCfg(m_lines, "SkillPresentation", m_skills);
 }
 
 void CSkillPrtCProcessor::GetPrtNames(std::map<std::string, std::string>& skillPrtNames, std::set<std::string>& outCfg)
@@ -37,6 +38,24 @@ void CSkillPrtCProcessor::GetPrtNames(std::map<std::string, std::string>& skillP
 	}
 }
 
+void CSkillPrtCProcessor::GetSkillPrtData(std::map<std::string, std::string>& skillPrtNames, std::map<std::string, std::string>& outCfg, std::string skinName/* = ""*/, std::string newSkinName/* = ""*/)
+{
+	for (auto iter = skillPrtNames.begin(); iter != skillPrtNames.end(); iter++)
+	{
+		if (m_skills.end() != m_skills.find(iter->second))
+		{
+			auto prtName = iter->second;
+			auto content = m_skills[iter->second].block;
+			if (!skinName.empty() || newSkinName.empty())
+			{
+				replace_str(prtName, skinName, newSkinName);
+				replace_str(content, skinName, newSkinName);
+			}
+			outCfg[prtName] = content;
+		}
+	}
+}
+
 std::string CSkillPrtCProcessor::GetSkillTotalContent(std::map<std::string, std::string>& prtNames)
 {
 	std::string content;
@@ -52,4 +71,52 @@ std::string CSkillPrtCProcessor::GetSkillTotalContent(std::map<std::string, std:
 	content += "</SkillPresentationSet>";
 
 	return content;
+}
+
+std::string CSkillPrtCProcessor::GenerateTotalContent(std::map<std::string, std::string>& skillData)
+{
+	std::string content;
+
+	vector<string> lines = m_lines;
+
+	auto iterInsert = lines.end();
+	if (lines.empty())
+	{
+		lines.push_back("<SkillPresentationSet>\r\n");
+		lines.push_back("</SkillPresentationSet>");
+		iterInsert = lines.end() - 1;
+	}
+	else
+	{
+		for (int index = lines.size() - 1; index >= 0; index--)
+		{
+			if (std::string::npos != lines[index].find("</SkillPresentationSet>"))
+			{
+				iterInsert = lines.begin() + index;
+				break;
+			}
+		}
+	}
+
+	for (auto iter = skillData.begin(); iter != skillData.end(); iter++)
+	{
+		if (m_skills.end() == m_skills.find(iter->first))
+		{
+			iterInsert = lines.insert(iterInsert, iter->second) + 1;
+		}
+	}
+
+	for (auto& line : lines)
+	{
+		content += line;
+	}
+
+	return content;
+}
+
+void CSkillPrtCProcessor::ExportGeneratedTotalContent(std::map<std::string, std::string>& skillData)
+{
+	SetPath(m_path, true);
+	auto content = GenerateTotalContent(skillData);
+	WriteTotalContent(content);
 }

@@ -195,14 +195,14 @@ void CCosSkillModelToolDlg::setSelectSkin(std::string idAndName)
 	}
 
 	auto skinPath = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + skinId + "/presentations/";
-	auto prtNameC = DeepFindInDir(skinPath, "_c.prt");
+	std::string prtNameC = DeepFindInDir(skinPath, "_c.prt");
 	if (!prtNameC.empty())
 	{
 		std::replace(prtNameC.begin(), prtNameC.end(), '\\', '/');
 		auto index = prtNameC.rfind("/");
 		prtNameC = prtNameC.substr(index + 1, prtNameC.length() - index - 1);
 	}
-	auto prtNameP = DeepFindInDir(skinPath, "_p.prt");
+	std::string prtNameP = DeepFindInDir(skinPath, "_p.prt");
 	if (!prtNameP.empty())
 	{
 		std::replace(prtNameP.begin(), prtNameP.end(), '\\', '/');

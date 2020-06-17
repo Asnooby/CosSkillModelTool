@@ -15,10 +15,16 @@ CSkillDataLuaProcessor::CSkillDataLuaProcessor()
 void CSkillDataLuaProcessor::SetHeroId(std::string heroId)
 {
 	std::string path = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + heroId + "_common/data/config/skilldata.lua";
+	SetPath(path);
+
 	m_skills.clear();
-	parseLuaSkillInfo(path, m_skills);
+	m_nSkillStartLine = -1;
+	m_nSkillEndLine = -1;
+	parseLuaSkillInfo(m_lines, m_skills);
 	m_damages.clear();
-	parseLuaDamageInfo(path, m_damages);
+	m_nDamageStartLine = -1;
+	m_nDamageEndLine = -1;
+	parseLuaDamageInfo(m_lines, m_damages);
 }
 
 SKILL_MAP& CSkillDataLuaProcessor::GetSkills()
@@ -173,36 +179,39 @@ std::string CSkillDataLuaProcessor::GetSkillTotalContent(std::string skillId)
 	return content;
 }
 
-std::string CSkillDataLuaProcessor::GenerateTotalContent(std::string heroId, std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject)
+std::string CSkillDataLuaProcessor::GenerateTotalContent(std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject)
 {
-	std::string path = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + heroId + "_common/data/config/skilldata.lua";
+	vector<string> lines = m_lines;
 
-	vector<string> lines;
-	readFileLines(path, lines);
-
-	if (-1 == m_nSkillEndLine)
+	auto nSkillStartLine = m_nSkillStartLine;
+	auto nSkillEndLine = m_nSkillEndLine;
+	auto nDamageStartLine = m_nDamageStartLine;
+	auto nDamageEndLine = m_nDamageEndLine;
+	if (-1 == nSkillEndLine)
 	{
-		lines.push_back("local skillInfo = {\r\n'");
-		lines.push_back("\r\n'");
-		lines.push_back("}\r\n'");
-		m_nSkillStartLine = 0;
-		m_nSkillEndLine = 2;
+		lines.push_back("local skillInfo = {\r\n");
+		lines.push_back("\r\n");
+		lines.push_back("}\r\n");
+		nSkillStartLine = 0;
+		nSkillEndLine = 2;
 	}
-	if (-1 == m_nDamageEndLine)
+	if (-1 == nDamageEndLine)
 	{
-		lines.push_back("\r\n'");
-		lines.push_back("local damageInfo = {\r\n'");
-		lines.push_back("\r\n'");
-		lines.push_back("}\r\n'");
-		m_nDamageStartLine = m_nSkillEndLine + 2;
-		m_nDamageEndLine = m_nSkillEndLine + 4;
+		lines.push_back("\r\n");
+		lines.push_back("local damageInfo = {\r\n");
+		lines.push_back("\r\n");
+		lines.push_back("}\r\n");
+		lines.push_back("\r\n");
+		lines.push_back("return { skillInfo, damageInfo }");
+		nDamageStartLine = nSkillEndLine + 2;
+		nDamageEndLine = nSkillEndLine + 4;
 	}
 
 	for (auto iter = damagesInject.begin(); iter != damagesInject.end(); iter++)
 	{
 		if (m_damages.find(iter->first) == m_damages.end())
 		{
-			lines.insert(lines.begin() + m_nDamageEndLine, iter->second);
+			lines.insert(lines.begin() + nDamageEndLine, iter->second);
 		}
 	}
 
@@ -210,7 +219,7 @@ std::string CSkillDataLuaProcessor::GenerateTotalContent(std::string heroId, std
 	{
 		if (m_skills.find(iter->first) == m_skills.end())
 		{
-			lines.insert(lines.begin() + m_nSkillEndLine, iter->second);
+			lines.insert(lines.begin() + nSkillEndLine, iter->second);
 		}
 	}
 
@@ -223,24 +232,24 @@ std::string CSkillDataLuaProcessor::GenerateTotalContent(std::string heroId, std
 	return content;
 }
 
-void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outCfg)
+void CSkillDataLuaProcessor::ExportGeneratedTotalContent(std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject)
 {
-	FILE* file;
-	fopen_s(&file, path.c_str(), "rb");
-	if (file)
+	SetPath(m_path, true);
+	auto content = GenerateTotalContent(skillsInject, damagesInject);
+	WriteTotalContent(content);
+}
+
+void CSkillDataLuaProcessor::parseLuaSkillInfo(const std::vector<std::string>& lines, SKILL_MAP& outCfg)
+{
+	if (!lines.empty())
 	{
 		std::map< std::string, std::string > mapMainSkill;
-		m_nSkillStartLine = -1;
-		m_nSkillEndLine = -1;
 		SKILL_BLOCK curNode;
-		char pBuffer[MAX_LINE_SIZE];
-		memset(pBuffer, MAX_LINE_SIZE, 0);
 		int index = 0;
 		int nBrakets = 0;
 		int lineIndex = 0;
-		while (fgets(pBuffer, MAX_LINE_SIZE, file))
+		for (auto& line : lines)
 		{
-			std::string line = pBuffer;
 			if (std::string::npos != line.find("local skillInfo = {"))
 			{
 				m_nSkillStartLine = lineIndex;
@@ -291,7 +300,7 @@ void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 				{
 					int index_1 = line.find("AghanimSkill");
 					index_1 = line.find("=", index_1);
-					auto str = line.substr(index_1 + (int)1, line.size() - index_1 - 1);
+					auto str = line.substr(index_1 + 1, line.size() - index_1 - 1);
 					str = SelectNumber(str.c_str());
 					mapMainSkill[str] = curNode.id;
 				}
@@ -299,7 +308,7 @@ void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 				{
 					int index_1 = line.find("skillSelectIDInfo");
 					index_1 = line.find("=", index_1);
-					auto str = line.substr(index_1 + (int)1, line.size() - index_1 - 1);
+					auto str = line.substr(index_1 + 1, line.size() - index_1 - 1);
 					auto vStr = split(str, ",");
 					for (auto& id : vStr)
 					{
@@ -314,7 +323,7 @@ void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 				{
 					int index_1 = line.find("useskill");
 					index_1 = line.find("=", index_1);
-					auto str = line.substr(index_1 + (int)1, line.size() - index_1 - 1);
+					auto str = line.substr(index_1 + 1, line.size() - index_1 - 1);
 					str = SelectNumber(str);
 					m_useSkills[curNode.id].insert(m_useSkills[curNode.id].end(), str);
 				}
@@ -351,30 +360,20 @@ void CSkillDataLuaProcessor::parseLuaSkillInfo(std::string path, SKILL_MAP& outC
 				iter++;
 			}
 		}
-
-		fclose(file);
-		file = NULL;
 	}
 }
 
-void CSkillDataLuaProcessor::parseLuaDamageInfo(std::string path, SKILL_MAP& outCfg)
+void CSkillDataLuaProcessor::parseLuaDamageInfo(const std::vector<std::string>& lines, SKILL_MAP& outCfg)
 {
-	FILE* file;
-	fopen_s(&file, path.c_str(), "rb");
-	if (file)
+	if (!lines.empty())
 	{
 		std::map< std::string, std::string > mapMainSkill;
-		m_nDamageStartLine = -1;
-		m_nDamageEndLine = -1;
 		SKILL_BLOCK curNode;
-		char pBuffer[MAX_LINE_SIZE];
-		memset(pBuffer, MAX_LINE_SIZE, 0);
 		int index = 0;
 		int nBrakets = 0;
 		int lineIndex = 0;
-		while (fgets(pBuffer, MAX_LINE_SIZE, file))
+		for (auto& line : lines)
 		{
-			std::string line = pBuffer;
 			if (std::string::npos != line.find("local damageInfo = {"))
 			{
 				m_nDamageStartLine = lineIndex;
@@ -411,8 +410,5 @@ void CSkillDataLuaProcessor::parseLuaDamageInfo(std::string path, SKILL_MAP& out
 
 			lineIndex++;
 		}
-
-		fclose(file);
-		file = NULL;
 	}
 }
