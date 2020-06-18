@@ -1,4 +1,5 @@
-#pragma onceo
+#pragma once
+
 #include "CEnvParams.h"
 #include "processor/CUnitProcessor.h"
 #include "processor/CSkillIniProcessor.h"
