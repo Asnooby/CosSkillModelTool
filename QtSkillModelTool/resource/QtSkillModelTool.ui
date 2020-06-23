@@ -6,25 +6,14 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1510</width>
-    <height>840</height>
+    <width>1426</width>
+    <height>902</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Skill Model Exporter</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QWidget" name="gridLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>670</x>
-      <y>50</y>
-      <width>831</width>
-      <height>781</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gLayoutPreview"/>
-   </widget>
    <widget class="QLineEdit" name="editPath">
     <property name="geometry">
      <rect>
@@ -63,7 +52,7 @@
    <widget class="QPushButton" name="btnConfirm">
     <property name="geometry">
      <rect>
-      <x>1200</x>
+      <x>1210</x>
       <y>18</y>
       <width>76</width>
       <height>24</height>
@@ -79,8 +68,8 @@
    <widget class="QLabel" name="label_3">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>48</y>
+      <x>282</x>
+      <y>100</y>
       <width>36</width>
       <height>16</height>
      </rect>
@@ -92,18 +81,18 @@
    <widget class="QListView" name="list_view_skins">
     <property name="geometry">
      <rect>
-      <x>280</x>
-      <y>68</y>
+      <x>282</x>
+      <y>120</y>
       <width>256</width>
-      <height>760</height>
+      <height>360</height>
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="label_4">
+   <widget class="QLabel" name="label_skill_id">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>48</y>
+      <x>282</x>
+      <y>492</y>
       <width>36</width>
       <height>16</height>
      </rect>
@@ -115,18 +104,18 @@
    <widget class="QListView" name="list_view_skills">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>68</y>
-      <width>120</width>
-      <height>760</height>
+      <x>282</x>
+      <y>512</y>
+      <width>256</width>
+      <height>372</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>48</y>
+      <x>22</x>
+      <y>100</y>
       <width>36</width>
       <height>16</height>
      </rect>
@@ -141,10 +130,10 @@
     </property>
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>88</y>
+      <x>22</x>
+      <y>140</y>
       <width>256</width>
-      <height>740</height>
+      <height>744</height>
      </rect>
     </property>
     <property name="sizePolicy">
@@ -157,7 +146,7 @@
    <widget class="QPushButton" name="btn_generate">
     <property name="geometry">
      <rect>
-      <x>1280</x>
+      <x>1290</x>
       <y>18</y>
       <width>76</width>
       <height>24</height>
@@ -173,8 +162,8 @@
    <widget class="QLineEdit" name="edit_search_heroid">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>68</y>
+      <x>22</x>
+      <y>120</y>
       <width>256</width>
       <height>22</height>
      </rect>
@@ -185,6 +174,57 @@
     <property name="clearButtonEnabled">
      <bool>true</bool>
     </property>
+   </widget>
+   <widget class="QFrame" name="frame_preview">
+    <property name="geometry">
+     <rect>
+      <x>550</x>
+      <y>100</y>
+      <width>860</width>
+      <height>784</height>
+     </rect>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>60</y>
+      <width>150</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="sizeConstraint">
+      <enum>QLayout::SetFixedSize</enum>
+     </property>
+     <item>
+      <widget class="QRadioButton" name="radio_skin">
+       <property name="text">
+        <string>皮肤模板</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QRadioButton" name="radio_skill">
+       <property name="text">
+        <string>技能模板</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
  </widget>

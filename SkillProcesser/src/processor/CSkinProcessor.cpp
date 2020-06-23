@@ -1,14 +1,14 @@
-#include "CUnitProcessor.h"
+#include "CSkinProcessor.h"
 #include "../tools/CommonFuncs.h"
 #include <io.h>
 #include <algorithm>
 
-CUnitProcessor::CUnitProcessor()
+CSkinProcessor::CSkinProcessor()
 {
 
 }
 
-void CUnitProcessor::SetHeroPackageRoot(std::string path)
+void CSkinProcessor::SetHeroPackageRoot(std::string path)
 {
 	std::replace(path.begin(), path.end(), '\\', '/');
 	struct __finddata64_t fileinfo;
@@ -62,17 +62,17 @@ void CUnitProcessor::SetHeroPackageRoot(std::string path)
 	}
 }
 
-std::vector<std::string>& CUnitProcessor::getSkins(std::string heroId)
+std::vector<std::string>& CSkinProcessor::getSkins(std::string heroId)
 {
 	return m_heros[heroId];
 }
 
-std::map<std::string, std::vector<std::string> >& CUnitProcessor::getHeros()
+std::map<std::string, std::vector<std::string> >& CSkinProcessor::getHeros()
 {
 	return m_heros;
 }
 
-std::string CUnitProcessor::getSkinName(std::string skinId)
+std::string CSkinProcessor::getSkinName(std::string skinId)
 {
 	return m_heros_name[skinId];
 }

@@ -1,8 +1,9 @@
 #pragma once
 #include "CSingleton.h"
 
+EDIT_TYPE CSingleton::gEditType = EDIT_TYPE::NONE;
 CEnvParams CSingleton::gEnvParams;
-CUnitProcessor CSingleton::gUnitProcessor;
+CSkinProcessor CSingleton::gUnitProcessor;
 CSkillIniProcessor CSingleton::gSkillIniProcessor;
 CSkillPrtCProcessor CSingleton::gSkillPrtCProcessor;
 CSkillPrtPProcessor CSingleton::gSkillPrtPProcessor;

@@ -27,3 +27,25 @@ typedef struct
 	std::string skillId;
 	std::string skillName;
 } MODEL_INFO;
+
+enum class CONTENT_TYPE
+{
+	NONE = 0,
+	SKILL_START = 1,
+	SKILLDATA_LUA = SKILL_START,
+	SKILL_INI,
+	SKILLCONDITION_INI,
+	SKILLPRESENTATION_INI,
+	PRT_C_INI,
+	PRT_P_INI,
+	SKIN_START,
+	UNITS_XML = SKIN_START,
+	ROLES_XML,
+};
+
+enum class EDIT_TYPE
+{
+	NONE,
+	SKIN_MODEL,
+	SKILL_MODEL,
+};

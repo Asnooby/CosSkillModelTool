@@ -24,12 +24,12 @@ BOOL CDlgPreview::OnInitDialog()
 {
 	CDialog::OnInitDialog();
 
-	m_ctrlTabPreview.InsertItem(CONTENT_TYPE::SKILLDATA_LUA, _T("skilldata.lua"));
-	m_ctrlTabPreview.InsertItem(CONTENT_TYPE::SKILL_INI, _T("skill.ini"));
-	m_ctrlTabPreview.InsertItem(CONTENT_TYPE::SKILLCONDITION_INI, _T("skillcondition.ini"));
-	m_ctrlTabPreview.InsertItem(CONTENT_TYPE::SKILLPRESENTATION_INI, _T("skillpresentation.ini"));
-	m_ctrlTabPreview.InsertItem(CONTENT_TYPE::PRT_C_INI, _T("_c.prt"));
-	m_ctrlTabPreview.InsertItem(CONTENT_TYPE::PRT_P_INI, _T("_p.prt"));
+	m_ctrlTabPreview.InsertItem((int)CONTENT_TYPE::SKILLDATA_LUA, _T("skilldata.lua"));
+	m_ctrlTabPreview.InsertItem((int)CONTENT_TYPE::SKILL_INI, _T("skill.ini"));
+	m_ctrlTabPreview.InsertItem((int)CONTENT_TYPE::SKILLCONDITION_INI, _T("skillcondition.ini"));
+	m_ctrlTabPreview.InsertItem((int)CONTENT_TYPE::SKILLPRESENTATION_INI, _T("skillpresentation.ini"));
+	m_ctrlTabPreview.InsertItem((int)CONTENT_TYPE::PRT_C_INI, _T("_c.prt"));
+	m_ctrlTabPreview.InsertItem((int)CONTENT_TYPE::PRT_P_INI, _T("_p.prt"));
 
 	return TRUE;
 }

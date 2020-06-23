@@ -1,7 +1,7 @@
 #pragma once
 
 #include "CEnvParams.h"
-#include "processor/CUnitProcessor.h"
+#include "processor/CSkinProcessor.h"
 #include "processor/CSkillIniProcessor.h"
 #include "processor/CSkillPrtCProcessor.h"
 #include "processor/CSkillPrtPProcessor.h"
@@ -16,8 +16,9 @@ class DLL_API CSingleton
 {
 	CSingleton();
 public:
+	static EDIT_TYPE gEditType;
 	static CEnvParams gEnvParams;
-	static CUnitProcessor gUnitProcessor;
+	static CSkinProcessor gUnitProcessor;
 	static CSkillIniProcessor gSkillIniProcessor;
 	static CSkillPrtCProcessor gSkillPrtCProcessor;
 	static CSkillPrtPProcessor gSkillPrtPProcessor;

@@ -6,7 +6,7 @@
 #include <map>
 #include <vector>
 
-class DLL_API CSkinSpDescribeProcessor : public CFileBase
+class DLL_API CSkinSpDescribeProcessor
 {
 public:
 	CSkinSpDescribeProcessor();

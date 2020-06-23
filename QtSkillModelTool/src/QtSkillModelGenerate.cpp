@@ -199,6 +199,7 @@ void QtSkillModelGenerate::onBtnExportClicked()
 
 void QtSkillModelGenerate::SetModelInfo(MODEL_INFO info)
 {
+	m_pPreview->RefreshTab();
     m_info = info;
 	m_infoGenerate = info;
     ui.edit_src_skinid->setText(QString::fromUtf8(info.skinId.c_str()));

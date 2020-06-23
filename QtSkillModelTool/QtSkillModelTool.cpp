@@ -1,6 +1,6 @@
 #include "QtSkillModelTool.h"
 #include "src/CSingleton.h"
-#include "src/processor/CUnitProcessor.h"
+#include "src/processor/CSkinProcessor.h"
 #include "src/processor/CSkillDataLuaProcessor.h"
 #include "src/tools/CommonFuncs.h"
 #include "qstringlist.h"
@@ -25,6 +25,8 @@ void QtSkillModelTool::bindSignalEvent()
 	connect(ui.list_view_skins, SIGNAL(clicked(QModelIndex)), this, SLOT(onListViewSkinsIndexMoved(QModelIndex)));
 	connect(ui.list_view_skills, SIGNAL(clicked(QModelIndex)), this, SLOT(onListViewSkillsIndexMoved(QModelIndex)));
 	connect(ui.edit_search_heroid, SIGNAL(textChanged(const QString&)), this, SLOT(onEditChange(const QString&)));
+	connect(ui.radio_skin, SIGNAL(toggled(bool)), this, SLOT(onRadioEditTypeToggled(bool)));
+	connect(ui.radio_skill, SIGNAL(toggled(bool)), this, SLOT(onRadioEditTypeToggled(bool)));
 }
 
 void QtSkillModelTool::initUI()
@@ -35,8 +37,7 @@ void QtSkillModelTool::initUI()
 	ui.list_view_skins->setEditTriggers(QAbstractItemView::NoEditTriggers);
 	ui.list_view_skills->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
-	m_pPreview = new QtConfigPreview(this);
-	ui.gLayoutPreview->addWidget(m_pPreview);
+	m_pPreview = new QtConfigPreview(ui.frame_preview);
 	m_pPreview->show();
 
 	m_pPreview->RegisterFuncGetContent([&](CONTENT_TYPE type)->std::string {
@@ -105,9 +106,19 @@ void QtSkillModelTool::initUI()
 				CSingleton::gSkillPrtCProcessor.GetPrtNames(prtSkillNames, setPrtNames);
 				return CSingleton::gSkillPrtPProcessor.GetSkillTotalContent(setPrtNames);
 			}
+			case CONTENT_TYPE::UNITS_XML:
+			{
+				return "units.xml";
+			}
+			case CONTENT_TYPE::ROLES_XML:
+			{
+				return "roles.xml";
+			}
 		}
 		return std::string("");
 	});
+
+	onRadioEditTypeToggled(true);
 }
 
 void QtSkillModelTool::onClickButtonBtnConfirm()
@@ -211,6 +222,14 @@ void QtSkillModelTool::onListViewHerosIndexesMoved(const QModelIndex& topLeft, c
 void QtSkillModelTool::onEditChange(const QString& qStr)
 {
 	refreshHeroList(qStr.toStdString());
+}
+
+void QtSkillModelTool::onRadioEditTypeToggled(bool checked)
+{
+	if (checked)
+	{
+		setEditType(ui.radio_skin->isChecked() ? EDIT_TYPE::SKIN_MODEL : (ui.radio_skill->isChecked() ? EDIT_TYPE::SKILL_MODEL : EDIT_TYPE::NONE));
+	}
 }
 
 void QtSkillModelTool::setSelectHero(std::string idAndName)
@@ -376,4 +395,28 @@ void QtSkillModelTool::refreshSkillList(std::string heroId)
 	QModelIndex qIndex = pSlm->index(0, 0);
 	ui.list_view_skills->setCurrentIndex(qIndex);
 	onListViewSkillsIndexMoved(qIndex);
+}
+
+void QtSkillModelTool::setEditType(EDIT_TYPE type)
+{
+	CSingleton::gEditType = type;
+
+	switch (type)
+	{
+	case EDIT_TYPE::SKIN_MODEL:
+	{
+		ui.label_skill_id->setVisible(false);
+		ui.list_view_skills->setVisible(false);
+		ui.list_view_skins->setFixedHeight(764);
+	}break;
+	case EDIT_TYPE::SKILL_MODEL:
+	{
+		ui.label_skill_id->setVisible(true);
+		ui.list_view_skills->setVisible(true);
+		ui.list_view_skins->setFixedHeight(360);
+	}break;
+	}
+
+	m_pPreview->RefreshTab();
+	m_pPreview->RefreshContent();
 }

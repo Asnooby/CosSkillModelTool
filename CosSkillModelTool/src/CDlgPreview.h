@@ -2,16 +2,7 @@
 #include <string>
 #include "afxdialogex.h"
 #include <functional>
-
-enum CONTENT_TYPE
-{
-	SKILLDATA_LUA,
-	SKILL_INI,
-	SKILLCONDITION_INI,
-	SKILLPRESENTATION_INI,
-	PRT_C_INI,
-	PRT_P_INI
-};
+#include "src/processor/BaseDefine.h"
 
 typedef std::function<std::string(CONTENT_TYPE)> SignalGetContentByType;
 

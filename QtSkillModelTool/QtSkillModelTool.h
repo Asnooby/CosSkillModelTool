@@ -18,6 +18,7 @@ public:
     void refreshHeroList(std::string key = "");
     void refreshSkinList(std::string heroId);
     void refreshSkillList(std::string heroId);
+    void setEditType(EDIT_TYPE type);
 
 private:
     void bindSignalEvent();
@@ -31,6 +32,7 @@ private slots:
     void onListViewSkillsIndexMoved(QModelIndex index);
     void onListViewHerosIndexesMoved(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles = QVector<int>());
     void onEditChange(const QString& qStr);
+    void onRadioEditTypeToggled(bool checked);
 
 private:
     Ui::QtSkillModelToolClass ui;

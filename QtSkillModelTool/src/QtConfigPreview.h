@@ -2,19 +2,11 @@
 
 #include <QtWidgets/QMainWindow>
 #include "ui_ConfigPreview.h"
+#include "src/processor/BaseDefine.h"
 
-enum class CONTENT_TYPE
-{
-    SKILLDATA_LUA,
-    SKILL_INI,
-    SKILLCONDITION_INI,
-    SKILLPRESENTATION_INI,
-    PRT_C_INI,
-    PRT_P_INI
-};
 typedef std::function<std::string(CONTENT_TYPE)> SignalGetContentByType;
 
-class QtConfigPreview : public QMainWindow
+class QtConfigPreview : public QFrame
 {
     Q_OBJECT
 
@@ -25,7 +17,8 @@ public:
     void SetPrtName(std::string prtP, std::string prtC);
     void RegisterFuncGetContent(SignalGetContentByType func);
     void SetContentType(CONTENT_TYPE type);
-    void RefreshContent();
+	void RefreshContent();
+    void RefreshTab();
 
 private:
     void bindSignalEvent();

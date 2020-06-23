@@ -6,10 +6,10 @@
 #include <map>
 #include <vector>
 
-class DLL_API CUnitProcessor : public CFileBase
+class DLL_API CSkinProcessor
 {
 public:
-	CUnitProcessor();
+	CSkinProcessor();
 
 public:
 	void SetHeroPackageRoot(std::string path);

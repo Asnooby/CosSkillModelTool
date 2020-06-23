@@ -8,7 +8,7 @@
 #include "CosSkillModelToolDlg.h"
 #include "afxdialogex.h"
 #include "src/CSingleton.h"
-#include "src/processor/CUnitProcessor.h"
+#include "src/processor/CSkinProcessor.h"
 #include "src/processor/CSkillDataLuaProcessor.h"
 #include "src/tools/CommonFuncs.h"
 #include <algorithm>
