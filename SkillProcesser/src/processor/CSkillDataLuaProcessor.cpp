@@ -65,11 +65,19 @@ void CSkillDataLuaProcessor::GetSkillData(std::string skillId, std::map<std::str
 				if (std::string::npos != index_1)
 				{
 					auto index_2 = content.find("=", index_1 + 1);
-					auto index_3 = content.find(",", index_2 + 1);
-					auto strMergeId = content.substr(index_2 + 1, index_3 - index_2);
+					auto index_3 = index_2 + 1;
+					for (auto index = index_3; index < content.size(); index++)
+					{
+						if (content[index] == ',' || content[index] == '\r' || content[index] == '\n')
+						{
+							index_3 = index;
+							break;
+						}
+					}
+					auto strMergeId = content.substr(index_2 + 1, index_3 - index_2 - 1);
 					strMergeId = SelectNumber(strMergeId);
 					int nMergeId = getValueByBase(skillId, strMergeId, newSkillId);
-					auto contentSrc = content.substr(index_1 + 1, index_3 - index_1);
+					auto contentSrc = content.substr(index_1, index_3 - index_1);
 					string contentNew = "damageMergeId = " + std::to_string(nMergeId);
 					replace_str(content, contentSrc, contentNew);
 				}
@@ -211,16 +219,16 @@ std::string CSkillDataLuaProcessor::GenerateTotalContent(std::map<std::string, s
 	{
 		if (m_damages.find(iter->first) == m_damages.end())
 		{
-			lines.insert(lines.begin() + nDamageEndLine, iter->second);
+			lines.insert(lines.begin() + nDamageEndLine++, iter->second);
 		}
 	}
 
 	for (auto iter = skillsInject.begin(); iter != skillsInject.end(); iter++)
 	{
-		if (m_skills.find(iter->first) == m_skills.end())
-		{
-			lines.insert(lines.begin() + nSkillEndLine, iter->second);
-		}
+		//if (m_skills.find(iter->first) == m_skills.end())
+		//{
+			lines.insert(lines.begin() + nSkillEndLine++, iter->second);
+		//}
 	}
 
 	std::string content;

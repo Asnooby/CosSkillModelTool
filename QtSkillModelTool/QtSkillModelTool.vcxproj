@@ -103,6 +103,7 @@
     <QtUic Include="resource\ConfigPreview.ui" />
     <QtUic Include="resource\QtSkillModelGenerate.ui" />
     <QtUic Include="resource\QtSkillModelTool.ui" />
+    <QtUic Include="resource\QtSkillModelTool_2.ui" />
   </ItemGroup>
   <ItemGroup>
     <QtRcc Include="resource\QtSkillModelTool.qrc" />

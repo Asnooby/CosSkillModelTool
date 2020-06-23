@@ -56,8 +56,8 @@ std::string CSkillConditionIniProcessor::GenerateTotalContent(std::map<std::stri
 	bool bAddEmptyLine = true;
 	for (auto iter = skillDatas.begin(); iter != skillDatas.end(); iter++)
 	{
-		if (m_skills.end() == m_skills.find(iter->first))
-		{
+		//if (m_skills.end() == m_skills.find(iter->first))
+		//{
 			if (bAddEmptyLine)
 			{
 				lines.push_back("\r\n");
@@ -65,7 +65,7 @@ std::string CSkillConditionIniProcessor::GenerateTotalContent(std::map<std::stri
 			}
 			lines.push_back("[" + iter->first + "]\r\n");
 			lines.push_back(iter->second);
-		}
+		//}
 	}
 
 	for (auto& line : lines)

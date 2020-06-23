@@ -23,7 +23,7 @@ void CSkillPresentationIniProcessor::SetSkinId(std::string skinId)
 {
 	std::string path = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + skinId + "/data/config/skillpresentation.ini";
 	SetPath(path);
-	m_skills.clear();
+
 	parseIniCfg(m_lines, m_skills);
 }
 
@@ -54,14 +54,14 @@ std::string CSkillPresentationIniProcessor::GenerateTotalContent(std::string ski
 		int insertIndex = -1;
 		if (m_skills.end() != m_skills.find(iter->first))
 		{
-			if (std::string::npos != m_skills[iter->first].block.find(skinId))
-			{
-				continue;
-			}
-			else
-			{
+			//if (std::string::npos != m_skills[iter->first].block.find(skinId))
+			//{
+			//	continue;
+			//}
+			//else
+			//{
 				insertIndex = m_skills[iter->first].endLine;
-			}
+			//}
 		}
 
 		std::string line = skinId + " = " + iter->second;

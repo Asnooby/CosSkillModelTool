@@ -5,10 +5,11 @@
 #include "src/tools/CommonFuncs.h"
 #include "qstringlist.h"
 #include "qstringlistmodel.h"
-#include "src/QtSkillModelGenerate.h"
 
 QtSkillModelTool::QtSkillModelTool(QWidget *parent)
     : QMainWindow(parent)
+	, m_pPreview(nullptr)
+	, m_pDlgGenerator(nullptr)
 {
     ui.setupUi(this);
 
@@ -23,11 +24,17 @@ void QtSkillModelTool::bindSignalEvent()
 	connect(ui.list_view_heros, SIGNAL(clicked(QModelIndex)), this, SLOT(onListViewHerosIndexMoved(QModelIndex)));
 	connect(ui.list_view_skins, SIGNAL(clicked(QModelIndex)), this, SLOT(onListViewSkinsIndexMoved(QModelIndex)));
 	connect(ui.list_view_skills, SIGNAL(clicked(QModelIndex)), this, SLOT(onListViewSkillsIndexMoved(QModelIndex)));
+	connect(ui.edit_search_heroid, SIGNAL(textChanged(const QString&)), this, SLOT(onEditChange(const QString&)));
 }
 
 void QtSkillModelTool::initUI()
 {
 	ui.editPath->setText(QString::fromUtf8("I:/git/moba2.0"));
+	ui.edit_search_heroid->setValidator(new QRegExpValidator(QRegExp("[0-9]+$"), ui.edit_search_heroid));
+	ui.list_view_heros->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	ui.list_view_skins->setEditTriggers(QAbstractItemView::NoEditTriggers);
+	ui.list_view_skills->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
 	m_pPreview = new QtConfigPreview(this);
 	ui.gLayoutPreview->addWidget(m_pPreview);
 	m_pPreview->show();
@@ -109,13 +116,18 @@ void QtSkillModelTool::onClickButtonBtnConfirm()
     CSingleton::gEnvParams.strProjectPath = tt.toUtf8();
 	CSingleton::gSkinSpDescribeProcessor.init(CSingleton::gEnvParams.strProjectPath + "/Debug/data/config/skinspdescribe.json");
     CSingleton::gUnitProcessor.SetHeroPackageRoot(CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/");
-	refreshHeroList();
+
+	refreshHeroList(ui.edit_search_heroid->text().toStdString());
 }
 
 void QtSkillModelTool::onClickButtonBtnGenerate()
 {
-	auto generator = new QtSkillModelGenerate();
-	generator->show();
+	if (!m_pDlgGenerator)
+	{
+		m_pDlgGenerator = new QtSkillModelGenerate();
+	}
+	m_pDlgGenerator->setModal(true);
+	m_pDlgGenerator->show();
 
 	MODEL_INFO info;
 
@@ -160,7 +172,7 @@ void QtSkillModelTool::onClickButtonBtnGenerate()
 			info.skillId = variant.toString().toStdString();
 		}
 	}
-	generator->SetModelInfo(info);
+	m_pDlgGenerator->SetModelInfo(info);
 }
 
 void QtSkillModelTool::onListViewHerosIndexMoved(QModelIndex index)
@@ -189,6 +201,16 @@ void QtSkillModelTool::onListViewSkillsIndexMoved(QModelIndex index)
 	{
 		m_pPreview->RefreshContent();
 	}
+}
+
+void QtSkillModelTool::onListViewHerosIndexesMoved(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles)
+{
+
+}
+
+void QtSkillModelTool::onEditChange(const QString& qStr)
+{
+	refreshHeroList(qStr.toStdString());
 }
 
 void QtSkillModelTool::setSelectHero(std::string idAndName)
@@ -245,19 +267,34 @@ void QtSkillModelTool::setSelectSkin(std::string idAndName)
 	m_pPreview->SetPrtName(prtNameP, prtNameC);
 }
 
-void QtSkillModelTool::refreshHeroList()
+void QtSkillModelTool::refreshHeroList(std::string key/* = ""*/)
 {
 	QStringListModel* pSlm = (QStringListModel*)ui.list_view_heros->model();
 	if (nullptr == pSlm)
 	{
 		pSlm = new QStringListModel(this);
 		ui.list_view_heros->setModel(pSlm);
+//		connect(pSlm, SIGNAL(dataChanged(const QModelIndex, const QModelIndex, const QVector<int> &)), this, SLOT(onListViewHerosIndexesMoved(const QModelIndex&, const QModelIndex&, const QVector<int>&)));
 	}
 	auto pSl = new QStringList();
 
 	auto heros = CSingleton::gUnitProcessor.getHeros();
 	for (auto iter = heros.begin(); iter != heros.end(); iter++)
 	{
+		auto iiC = -1;
+		for (auto c : key)
+		{
+			iiC = iter->first.find(c, iiC + 1);
+			if (std::string::npos == iiC)
+			{
+				break;
+			}
+		}
+		if (!key.empty() && std::string::npos == iiC)
+		{
+			continue;
+		}
+
 		auto skins = CSingleton::gUnitProcessor.getSkins(iter->first);
 		std::string protoSkin;
 		for (auto iterSkin = skins.begin(); iterSkin != skins.end(); iterSkin++)
@@ -277,13 +314,18 @@ void QtSkillModelTool::refreshHeroList()
 		pSl->append(protoSkinName.c_str());
 	}
 
+	auto index = ui.list_view_heros->currentIndex();
 	pSlm->setStringList(*pSl);
 	delete pSl;
 
-	QModelIndex qIndex = pSlm->index(0, 0);
-	ui.list_view_heros->setCurrentIndex(qIndex);
+	QVariant variant = pSlm->data(index, Qt::DisplayRole);
+	if (!variant.isValid())
+	{
+		index = pSlm->index(0, 0);
+	}
 
-	onListViewHerosIndexMoved(qIndex);
+	ui.list_view_heros->setCurrentIndex(index);
+	onListViewHerosIndexMoved(index);
 }
 
 void QtSkillModelTool::refreshSkinList(std::string heroId)

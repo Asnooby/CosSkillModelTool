@@ -3,6 +3,7 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_QtSkillModelTool.h"
 #include "src/QtConfigPreview.h"
+#include "src/QtSkillModelGenerate.h"
 
 class QtSkillModelTool : public QMainWindow
 {
@@ -14,7 +15,7 @@ public:
 public:
     void setSelectHero(std::string idAndName);
     void setSelectSkin(std::string idAndName);
-    void refreshHeroList();
+    void refreshHeroList(std::string key = "");
     void refreshSkinList(std::string heroId);
     void refreshSkillList(std::string heroId);
 
@@ -28,8 +29,11 @@ private slots:
     void onListViewHerosIndexMoved(QModelIndex index);
     void onListViewSkinsIndexMoved(QModelIndex index);
     void onListViewSkillsIndexMoved(QModelIndex index);
+    void onListViewHerosIndexesMoved(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QVector<int>& roles = QVector<int>());
+    void onEditChange(const QString& qStr);
 
 private:
     Ui::QtSkillModelToolClass ui;
     QtConfigPreview* m_pPreview;
+    QtSkillModelGenerate* m_pDlgGenerator;
 };

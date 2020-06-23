@@ -100,10 +100,10 @@ std::string CSkillPrtCProcessor::GenerateTotalContent(std::map<std::string, std:
 
 	for (auto iter = skillData.begin(); iter != skillData.end(); iter++)
 	{
-		if (m_skills.end() == m_skills.find(iter->first))
-		{
+		//if (m_skills.end() == m_skills.find(iter->first))
+		//{
 			iterInsert = lines.insert(iterInsert, iter->second) + 1;
-		}
+		//}
 	}
 
 	for (auto& line : lines)

@@ -30,7 +30,7 @@
      <rect>
       <x>70</x>
       <y>20</y>
-      <width>1120</width>
+      <width>920</width>
       <height>20</height>
      </rect>
     </property>
@@ -95,15 +95,15 @@
       <x>280</x>
       <y>68</y>
       <width>256</width>
-      <height>760</height>
+      <height>320</height>
      </rect>
     </property>
    </widget>
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>48</y>
+      <x>280</x>
+      <y>420</y>
       <width>36</width>
       <height>16</height>
      </rect>
@@ -115,10 +115,10 @@
    <widget class="QListView" name="list_view_skills">
     <property name="geometry">
      <rect>
-      <x>540</x>
-      <y>68</y>
-      <width>120</width>
-      <height>760</height>
+      <x>280</x>
+      <y>437</y>
+      <width>256</width>
+      <height>391</height>
      </rect>
     </property>
    </widget>
@@ -184,6 +184,67 @@
     </property>
     <property name="clearButtonEnabled">
      <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>1010</x>
+      <y>20</y>
+      <width>40</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SkinId</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>1050</x>
+      <y>20</y>
+      <width>140</width>
+      <height>20</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>180</y>
+      <width>80</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>SkinId</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>560</x>
+      <y>200</y>
+      <width>80</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="lineWidth">
+     <number>1</number>
+    </property>
+    <property name="text">
+     <string>↓</string>
+    </property>
+    <property name="textFormat">
+     <enum>Qt::AutoText</enum>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
