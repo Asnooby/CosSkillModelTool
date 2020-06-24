@@ -105,13 +105,13 @@ BOOL CCosSkillModelToolDlg::OnInitDialog()
 		{
 			return std::string("SKILLPRESENTATION_INI");
 		}
-		case CONTENT_TYPE::PRT_C_INI:
+		case CONTENT_TYPE::PRT_C_XML:
 		{
-			return std::string("PRT_C_INI");
+			return std::string("PRT_C_XML");
 		}
-		case CONTENT_TYPE::PRT_P_INI:
+		case CONTENT_TYPE::PRT_P_XML:
 		{
-			return std::string("PRT_P_INI");
+			return std::string("PRT_P_XML");
 		}
 		}
 		return std::string("");

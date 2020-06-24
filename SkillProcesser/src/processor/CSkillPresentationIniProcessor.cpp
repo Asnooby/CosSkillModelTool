@@ -27,7 +27,7 @@ void CSkillPresentationIniProcessor::SetSkinId(std::string skinId)
 	parseIniCfg(m_lines, m_skills);
 }
 
-std::string CSkillPresentationIniProcessor::GetSkillTotalContent(std::vector<std::string>& skillIds)
+std::string CSkillPresentationIniProcessor::GetSkillTotalContent(const std::vector<std::string>& skillIds)
 {
 	std::string content;
 	for (auto& skillId : skillIds)
@@ -42,7 +42,7 @@ std::string CSkillPresentationIniProcessor::GetSkillTotalContent(std::vector<std
 	return content;
 }
 
-std::string CSkillPresentationIniProcessor::GenerateTotalContent(std::string skinId, std::map<std::string, std::string>& skillDatas)
+std::string CSkillPresentationIniProcessor::GenerateTotalContent(std::string skinId, const std::map<std::string, std::string>& skillDatas)
 {
 	std::string content;
 
@@ -93,14 +93,14 @@ std::string CSkillPresentationIniProcessor::GenerateTotalContent(std::string ski
 	return content;
 }
 
-void CSkillPresentationIniProcessor::ExportGeneratedTotalContent(std::string skinId, std::map<std::string, std::string>& skillDatas)
+void CSkillPresentationIniProcessor::ExportGeneratedTotalContent(std::string skinId, const std::map<std::string, std::string>& skillDatas)
 {
 	SetPath(m_path, true);
 	auto content = GenerateTotalContent(skinId, skillDatas);
 	WriteTotalContent(content);
 }
 
-void CSkillPresentationIniProcessor::GetSkillPrtName(std::string skinId, std::vector<std::string>& SkillIds, std::map<std::string, std::string>& outCfg, std::string skillId/* = ""*/, std::string newSkillId/* = ""*/)
+void CSkillPresentationIniProcessor::GetSkillPrtName(std::string skinId, const std::vector<std::string>& SkillIds, std::map<std::string, std::string>& outCfg, std::string skillId/* = ""*/, std::string newSkillId/* = ""*/)
 {
 	std::vector<std::string> vRet;
 	for (auto&  id : SkillIds)

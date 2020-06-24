@@ -18,7 +18,7 @@ void CSkillIniProcessor::SetHeroId(std::string heroId)
 	parseIniCfg(m_lines, m_skills);
 }
 
-void CSkillIniProcessor::GetSkillData(std::vector<std::string>& skillIds, std::string oldSkillId, std::string newSkillId, std::map<std::string, std::string>& outSkills)
+void CSkillIniProcessor::GetSkillData(const std::vector<std::string>& skillIds, std::string oldSkillId, std::string newSkillId, std::map<std::string, std::string>& outSkills)
 {
 	for (auto& skillId : skillIds)
 	{
@@ -32,7 +32,7 @@ void CSkillIniProcessor::GetSkillData(std::vector<std::string>& skillIds, std::s
 	}
 }
 
-std::string CSkillIniProcessor::GetSkillTotalContent(std::vector<std::string>& skillIds)
+std::string CSkillIniProcessor::GetSkillTotalContent(const std::vector<std::string>& skillIds)
 {
 	std::string content;
 	for (auto& skillId : skillIds)
@@ -47,7 +47,7 @@ std::string CSkillIniProcessor::GetSkillTotalContent(std::vector<std::string>& s
 	return content;
 }
 
-std::string CSkillIniProcessor::GenerateTotalContent(std::map<std::string, std::string>& skillDatas)
+std::string CSkillIniProcessor::GenerateTotalContent(const std::map<std::string, std::string>& skillDatas)
 {
 	std::string content;
 
@@ -76,7 +76,7 @@ std::string CSkillIniProcessor::GenerateTotalContent(std::map<std::string, std::
 	return content;
 }
 
-void CSkillIniProcessor::ExportGeneratedTotalContent(std::map<std::string, std::string>& skillDatas)
+void CSkillIniProcessor::ExportGeneratedTotalContent(const std::map<std::string, std::string>& skillDatas)
 {
 	SetPath(m_path, true);
 	auto content = GenerateTotalContent(skillDatas);

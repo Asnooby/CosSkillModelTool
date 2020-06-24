@@ -128,7 +128,7 @@
     <enum>QTabWidget::Rounded</enum>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="elideMode">
     <enum>Qt::ElideLeft</enum>
@@ -145,6 +145,11 @@
     </attribute>
    </widget>
    <widget class="QWidget" name="tabRolesXml">
+    <attribute name="title">
+     <string>页</string>
+    </attribute>
+   </widget>
+   <widget class="QWidget" name="tabPrtXml">
     <attribute name="title">
      <string>页</string>
     </attribute>

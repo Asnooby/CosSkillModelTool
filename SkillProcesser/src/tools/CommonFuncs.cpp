@@ -180,7 +180,7 @@ void parseIniCfg(const std::vector<std::string>& lines, map<string, SKILL_BLOCK>
 	}
 }
 
-void parseXmlCfg(const std::vector<std::string>& lines, const string tag, map<string, SKILL_BLOCK>& outCfg)
+void parseXmlCfg(const std::vector<std::string>& lines, const string tag, const string attr, map<string, SKILL_BLOCK>& outCfg)
 {
 	if (!lines.empty())
 	{
@@ -192,7 +192,7 @@ void parseXmlCfg(const std::vector<std::string>& lines, const string tag, map<st
 			{
 				curNode.init();
 				curNode.startLine = lineIndex;
-				auto index_1 = line.find("name");
+				auto index_1 = line.find(attr);
 				if (line.npos != index_1)
 				{
 					index_1 = line.find('"', index_1 + 1);

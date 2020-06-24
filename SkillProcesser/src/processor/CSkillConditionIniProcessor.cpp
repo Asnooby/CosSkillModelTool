@@ -18,7 +18,7 @@ void CSkillConditionIniProcessor::SetHeroId(std::string heroId)
 	parseIniCfg(m_lines, m_skills);
 }
 
-std::string CSkillConditionIniProcessor::GetSkillTotalContent(std::vector<std::string>& skillIds)
+std::string CSkillConditionIniProcessor::GetSkillTotalContent(const std::vector<std::string>& skillIds)
 {
 	std::string content;
 	for (auto& skillId : skillIds)
@@ -33,7 +33,7 @@ std::string CSkillConditionIniProcessor::GetSkillTotalContent(std::vector<std::s
 	return content;
 }
 
-void CSkillConditionIniProcessor::GetSkillData(std::vector<std::string>& skillIds, std::string oldSkillId, std::string newSkillId, std::map<std::string, std::string>& outSkills)
+void CSkillConditionIniProcessor::GetSkillData(const std::vector<std::string>& skillIds, std::string oldSkillId, std::string newSkillId, std::map<std::string, std::string>& outSkills)
 {
 	for (auto& skillId : skillIds)
 	{
@@ -47,7 +47,7 @@ void CSkillConditionIniProcessor::GetSkillData(std::vector<std::string>& skillId
 	}
 }
 
-std::string CSkillConditionIniProcessor::GenerateTotalContent(std::map<std::string, std::string>& skillDatas)
+std::string CSkillConditionIniProcessor::GenerateTotalContent(const std::map<std::string, std::string>& skillDatas)
 {
 	std::string content;
 
@@ -76,7 +76,7 @@ std::string CSkillConditionIniProcessor::GenerateTotalContent(std::map<std::stri
 	return content;
 }
 
-void CSkillConditionIniProcessor::ExportGeneratedTotalContent(std::map<std::string, std::string>& skillDatas)
+void CSkillConditionIniProcessor::ExportGeneratedTotalContent(const std::map<std::string, std::string>& skillDatas)
 {
 	SetPath(m_path, true);
 	auto content = GenerateTotalContent(skillDatas);

@@ -30,6 +30,7 @@ void QtConfigPreview::initUI()
 
 	ui.tab_view_skin->setTabText(0, QString::fromUtf8("units.xml"));
 	ui.tab_view_skin->setTabText(1, QString::fromUtf8("roles.xml"));
+	ui.tab_view_skin->setTabText(2, QString::fromUtf8("_p.prt"));
 	ui.tab_view_skin->setCurrentIndex(0);
 
     ui.edit_content->setWordWrapMode(QTextOption::WrapAnywhere);
@@ -43,7 +44,8 @@ void QtConfigPreview::onTabCurrentChanged(int index)
 void QtConfigPreview::SetPrtName(std::string prtP, std::string prtC)
 {
     ui.tab_view_skill->setTabText(4, QString::fromStdString(prtC));
-    ui.tab_view_skill->setTabText(5, QString::fromStdString(prtP));
+	ui.tab_view_skill->setTabText(5, QString::fromStdString(prtP));
+	ui.tab_view_skin->setTabText(2, QString::fromStdString(prtP));
     RefreshContent();
 }
 

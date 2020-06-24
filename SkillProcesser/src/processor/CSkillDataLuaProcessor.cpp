@@ -187,7 +187,7 @@ std::string CSkillDataLuaProcessor::GetSkillTotalContent(std::string skillId)
 	return content;
 }
 
-std::string CSkillDataLuaProcessor::GenerateTotalContent(std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject)
+std::string CSkillDataLuaProcessor::GenerateTotalContent(const std::map<std::string, std::string>& skillsInject, const std::map<std::string, std::string>& damagesInject)
 {
 	vector<string> lines = m_lines;
 
@@ -240,7 +240,7 @@ std::string CSkillDataLuaProcessor::GenerateTotalContent(std::map<std::string, s
 	return content;
 }
 
-void CSkillDataLuaProcessor::ExportGeneratedTotalContent(std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject)
+void CSkillDataLuaProcessor::ExportGeneratedTotalContent(const std::map<std::string, std::string>& skillsInject, const std::map<std::string, std::string>& damagesInject)
 {
 	SetPath(m_path, true);
 	auto content = GenerateTotalContent(skillsInject, damagesInject);

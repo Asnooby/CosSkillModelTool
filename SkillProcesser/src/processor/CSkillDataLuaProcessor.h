@@ -22,8 +22,8 @@ public:
 	void GetSkillIds(std::string skillId, std::vector<std::string>& outSkills);
 	std::string GetSkillTotalContent(std::string skillId);
 
-	std::string GenerateTotalContent(std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject);
-	void ExportGeneratedTotalContent(std::map<std::string, std::string>& skillsInject, std::map<std::string, std::string>& damagesInject);
+	std::string GenerateTotalContent(const std::map<std::string, std::string>& skillsInject, const std::map<std::string, std::string>& damagesInject);
+	void ExportGeneratedTotalContent(const std::map<std::string, std::string>& skillsInject, const std::map<std::string, std::string>& damagesInject);
 
 protected:
 	void parseLuaSkillInfo(const std::vector<std::string>& lines, SKILL_MAP& outCfg);

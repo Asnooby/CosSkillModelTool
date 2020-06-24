@@ -11,6 +11,8 @@ CSkillDataLuaProcessor CSingleton::gSkillDataLuaProcesser;
 CSkinSpDescribeProcessor CSingleton::gSkinSpDescribeProcessor;
 CSkillConditionIniProcessor CSingleton::gSkillConditionIniProcessor;
 CSkillPresentationIniProcessor CSingleton::gSkillPresentationIniProcessor;
+CUnitsXmlProcessor CSingleton::gUnitsXmlProcessor;
+CRolesXmlProcessor CSingleton::gRolesXmlProcessor;
 
 CSingleton::CSingleton()
 {

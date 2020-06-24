@@ -96,23 +96,29 @@ void QtSkillModelTool::initUI()
 			{
 				return CSingleton::gSkillPresentationIniProcessor.GetSkillTotalContent(skillIds);
 			}
-			case CONTENT_TYPE::PRT_C_INI:
+			case CONTENT_TYPE::PRT_C_XML:
 			{
 				return CSingleton::gSkillPrtCProcessor.GetSkillTotalContent(prtSkillNames);
 			}
-			case CONTENT_TYPE::PRT_P_INI:
+			case CONTENT_TYPE::PRT_P_XML:
 			{
 				std::set<std::string> setPrtNames;
 				CSingleton::gSkillPrtCProcessor.GetPrtNames(prtSkillNames, setPrtNames);
-				return CSingleton::gSkillPrtPProcessor.GetSkillTotalContent(setPrtNames);
+				return CSingleton::gSkillPrtPProcessor.GetPrtTotalContent(setPrtNames);
 			}
 			case CONTENT_TYPE::UNITS_XML:
 			{
-				return "units.xml";
+				return CSingleton::gUnitsXmlProcessor.GetTotalContent(skinId);
 			}
 			case CONTENT_TYPE::ROLES_XML:
 			{
-				return "roles.xml";
+				return CSingleton::gRolesXmlProcessor.GetTotalContent(CSingleton::gUnitsXmlProcessor.GetRoleId(skinId));
+			}
+			case CONTENT_TYPE::SKIN_PRT_P_XML:
+			{
+				std::set<std::string> setPrtNames;
+				CSingleton::gUnitsXmlProcessor.GetBasePresentations(skinId, setPrtNames);
+				return CSingleton::gSkillPrtPProcessor.GetPrtTotalContent(setPrtNames);
 			}
 		}
 		return std::string("");
@@ -262,9 +268,14 @@ void QtSkillModelTool::setSelectSkin(std::string idAndName)
 	}
 
 	CSingleton::gSkillPresentationIniProcessor.SetSkinId(skinId);
+	CSingleton::gUnitsXmlProcessor.SetSkinId(skinId);
+	CSingleton::gRolesXmlProcessor.SetSkinId(skinId);
 
-	auto skinPath = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + skinId + "/presentations/";
-	std::string pathPrtC = DeepFindInDir(skinPath, "_c.prt");
+	auto skinPath = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + skinId + "/";
+	auto roleId = CSingleton::gUnitsXmlProcessor.GetRoleId(skinId);
+	auto pathPrtC = CSingleton::gRolesXmlProcessor.GetPrtCPath(roleId);
+	auto pathPrtP = CSingleton::gRolesXmlProcessor.GetPrtPPath(roleId);
+
 	auto prtNameC = pathPrtC;
 	if (!prtNameC.empty())
 	{
@@ -272,7 +283,6 @@ void QtSkillModelTool::setSelectSkin(std::string idAndName)
 		auto index = prtNameC.rfind("/");
 		prtNameC = prtNameC.substr(index + 1, prtNameC.length() - index - 1);
 	}
-	std::string pathPrtP = DeepFindInDir(skinPath, "_p.prt");
 	auto prtNameP = pathPrtP;
 	if (!prtNameP.empty())
 	{
@@ -281,8 +291,8 @@ void QtSkillModelTool::setSelectSkin(std::string idAndName)
 		prtNameP = prtNameP.substr(index + 1, prtNameP.length() - index - 1);
 	}
 
-	CSingleton::gSkillPrtCProcessor.SetPath(pathPrtC);
-	CSingleton::gSkillPrtPProcessor.SetPath(pathPrtP);
+	CSingleton::gSkillPrtCProcessor.SetPath(skinPath + pathPrtC);
+	CSingleton::gSkillPrtPProcessor.SetPath(skinPath + pathPrtP);
 	m_pPreview->SetPrtName(prtNameP, prtNameC);
 }
 

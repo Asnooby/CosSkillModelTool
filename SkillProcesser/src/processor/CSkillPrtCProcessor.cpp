@@ -14,10 +14,10 @@ void CSkillPrtCProcessor::SetPath(const std::string path, bool createIfNotExist/
 {
 	CFileBase::SetPath(path, createIfNotExist);
 	m_skills.clear();
-	parseXmlCfg(m_lines, "SkillPresentation", m_skills);
+	parseXmlCfg(m_lines, "SkillPresentation", "name", m_skills);
 }
 
-void CSkillPrtCProcessor::GetPrtNames(std::map<std::string, std::string>& skillPrtNames, std::set<std::string>& outCfg)
+void CSkillPrtCProcessor::GetPrtNames(const std::map<std::string, std::string>& skillPrtNames, std::set<std::string>& outCfg)
 {
 	for (auto iter = skillPrtNames.begin(); iter != skillPrtNames.end(); iter++)
 	{
@@ -38,7 +38,7 @@ void CSkillPrtCProcessor::GetPrtNames(std::map<std::string, std::string>& skillP
 	}
 }
 
-void CSkillPrtCProcessor::GetSkillPrtData(std::map<std::string, std::string>& skillPrtNames, std::map<std::string, std::string>& outCfg, std::string skinName/* = ""*/, std::string newSkinName/* = ""*/)
+void CSkillPrtCProcessor::GetSkillPrtData(const std::map<std::string, std::string>& skillPrtNames, std::map<std::string, std::string>& outCfg, std::string skinName/* = ""*/, std::string newSkinName/* = ""*/)
 {
 	for (auto iter = skillPrtNames.begin(); iter != skillPrtNames.end(); iter++)
 	{
@@ -56,7 +56,7 @@ void CSkillPrtCProcessor::GetSkillPrtData(std::map<std::string, std::string>& sk
 	}
 }
 
-std::string CSkillPrtCProcessor::GetSkillTotalContent(std::map<std::string, std::string>& prtNames)
+std::string CSkillPrtCProcessor::GetSkillTotalContent(const std::map<std::string, std::string>& prtNames)
 {
 	std::string content;
 	content += "<SkillPresentationSet>\r\n";
@@ -73,7 +73,7 @@ std::string CSkillPrtCProcessor::GetSkillTotalContent(std::map<std::string, std:
 	return content;
 }
 
-std::string CSkillPrtCProcessor::GenerateTotalContent(std::map<std::string, std::string>& skillData)
+std::string CSkillPrtCProcessor::GenerateTotalContent(const std::map<std::string, std::string>& skillData)
 {
 	std::string content;
 
@@ -114,7 +114,7 @@ std::string CSkillPrtCProcessor::GenerateTotalContent(std::map<std::string, std:
 	return content;
 }
 
-void CSkillPrtCProcessor::ExportGeneratedTotalContent(std::map<std::string, std::string>& skillData)
+void CSkillPrtCProcessor::ExportGeneratedTotalContent(const std::map<std::string, std::string>& skillData)
 {
 	SetPath(m_path, true);
 	auto content = GenerateTotalContent(skillData);

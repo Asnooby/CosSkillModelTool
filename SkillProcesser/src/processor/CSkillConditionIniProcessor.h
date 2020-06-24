@@ -14,10 +14,10 @@ public:
 
 public:
 	void SetHeroId(std::string heroId);
-	std::string GetSkillTotalContent(std::vector<std::string>& skillIds);
-	void GetSkillData(std::vector<std::string>& skillIds, std::string oldSkillId, std::string newSkillId, std::map<std::string, std::string>& outSkills);
-	std::string GenerateTotalContent(std::map<std::string, std::string>& skillDatas);
-	void ExportGeneratedTotalContent(std::map<std::string, std::string>& skillDatas);
+	std::string GetSkillTotalContent(const std::vector<std::string>& skillIds);
+	void GetSkillData(const std::vector<std::string>& skillIds, std::string oldSkillId, std::string newSkillId, std::map<std::string, std::string>& outSkills);
+	std::string GenerateTotalContent(const std::map<std::string, std::string>& skillDatas);
+	void ExportGeneratedTotalContent(const std::map<std::string, std::string>& skillDatas);
 
 private:
 	std::map<std::string, SKILL_BLOCK> m_skills;

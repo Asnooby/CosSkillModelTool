@@ -87,19 +87,33 @@ void QtSkillModelGenerate::initUI()
 				return m_SkillPresentationIniProcessor.GenerateTotalContent(m_infoGenerate.skinId, prtSkillNames);
 			}
 		}
-		case CONTENT_TYPE::PRT_C_INI:
+		case CONTENT_TYPE::PRT_C_XML:
 		{
 			std::map<std::string, std::string> skillData;
 			CSingleton::gSkillPrtCProcessor.GetSkillPrtData(prtSkillNames, skillData, m_info.skinName, m_infoGenerate.skinName);
 			return m_SkillPrtCProcessor.GenerateTotalContent(skillData);
 		}
-		case CONTENT_TYPE::PRT_P_INI:
+		case CONTENT_TYPE::PRT_P_XML:
 		{
 			std::set<std::string> setPrtNames;
 			CSingleton::gSkillPrtCProcessor.GetPrtNames(prtSkillNames, setPrtNames);
 			std::map<std::string, std::string> prtData;
 			CSingleton::gSkillPrtPProcessor.GetPrtData(setPrtNames, prtData, m_info.skinName, m_infoGenerate.skinName);
 			return m_SkillPrtPProcessor.GenerateTotalContent(prtData);
+		}
+		case CONTENT_TYPE::UNITS_XML:
+		{
+			return CSingleton::gUnitsXmlProcessor.GetTotalContent(m_info.skinId);
+		}
+		case CONTENT_TYPE::ROLES_XML:
+		{
+			return CSingleton::gRolesXmlProcessor.GetTotalContent(CSingleton::gUnitsXmlProcessor.GetRoleId(m_info.skinId));
+		}
+		case CONTENT_TYPE::SKIN_PRT_P_XML:
+		{
+			std::set<std::string> setPrtNames;
+			CSingleton::gUnitsXmlProcessor.GetBasePresentations(m_info.skinId, setPrtNames);
+			return CSingleton::gSkillPrtPProcessor.GetPrtTotalContent(setPrtNames);
 		}
 		}
 		return std::string("");

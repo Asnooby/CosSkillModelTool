@@ -14,10 +14,10 @@ void CSkillPrtPProcessor::SetPath(const std::string path, bool createIfNotExist/
 {
 	CFileBase::SetPath(path, createIfNotExist);
 	m_skills.clear();
-	parseXmlCfg(m_lines, "Presentation", m_skills);
+	parseXmlCfg(m_lines, "Presentation", "name", m_skills);
 }
 
-void CSkillPrtPProcessor::GetPrtData(std::set<std::string>& prtNames, std::map<std::string, std::string>& outCfg, std::string skinName, std::string newSkinName)
+void CSkillPrtPProcessor::GetPrtData(const std::set<std::string>& prtNames, std::map<std::string, std::string>& outCfg, std::string skinName, std::string newSkinName)
 {
 	for (auto& prtName : prtNames)
 	{
@@ -35,7 +35,7 @@ void CSkillPrtPProcessor::GetPrtData(std::set<std::string>& prtNames, std::map<s
 	}
 }
 
-std::string CSkillPrtPProcessor::GetSkillTotalContent(std::set<std::string>& prtNames)
+std::string CSkillPrtPProcessor::GetPrtTotalContent(const std::set<std::string>& prtNames)
 {
 	std::string content;
 	content += "<PresentationSet>\r\n";
@@ -52,7 +52,7 @@ std::string CSkillPrtPProcessor::GetSkillTotalContent(std::set<std::string>& prt
 	return content;
 }
 
-std::string CSkillPrtPProcessor::GenerateTotalContent(std::map<std::string, std::string>& prtData)
+std::string CSkillPrtPProcessor::GenerateTotalContent(const std::map<std::string, std::string>& prtData)
 {
 	std::string content;
 
@@ -92,7 +92,7 @@ std::string CSkillPrtPProcessor::GenerateTotalContent(std::map<std::string, std:
 	return content;
 }
 
-void CSkillPrtPProcessor::ExportGeneratedTotalContent(std::map<std::string, std::string>& prtData)
+void CSkillPrtPProcessor::ExportGeneratedTotalContent(const std::map<std::string, std::string>& prtData)
 {
 	SetPath(m_path, true);
 	auto content = GenerateTotalContent(prtData);

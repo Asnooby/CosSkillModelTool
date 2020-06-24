@@ -9,6 +9,8 @@
 #include "processor/CSkinSpDescribeProcessor.h"
 #include "processor/CSkillConditionIniProcessor.h"
 #include "processor/CSkillPresentationIniProcessor.h"
+#include "processor/CUnitsXmlProcessor.h"
+#include "processor/CRolesXmlProcessor.h"
 
 #include "IDllExport.h"
 
@@ -26,4 +28,6 @@ public:
 	static CSkinSpDescribeProcessor gSkinSpDescribeProcessor;
 	static CSkillConditionIniProcessor gSkillConditionIniProcessor;
 	static CSkillPresentationIniProcessor gSkillPresentationIniProcessor;
+	static CUnitsXmlProcessor gUnitsXmlProcessor;
+	static CRolesXmlProcessor gRolesXmlProcessor;
 };
