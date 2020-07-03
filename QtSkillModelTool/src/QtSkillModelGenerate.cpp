@@ -11,6 +11,12 @@ QtSkillModelGenerate::QtSkillModelGenerate(QWidget* parent)
     bindSignalEvent();
 }
 
+void QtSkillModelGenerate::showEvent(QShowEvent* event)
+{
+	ui.group_skillid->setVisible(CSingleton::gEditType == EDIT_TYPE::SKILL_MODEL);
+	ui.group_roleid->setVisible(CSingleton::gEditType == EDIT_TYPE::SKIN_MODEL);
+}
+
 void QtSkillModelGenerate::bindSignalEvent()
 {
     connect(ui.btn_generate, SIGNAL(clicked()), this, SLOT(onBtnGenerateClicked()));
@@ -77,7 +83,7 @@ void QtSkillModelGenerate::initUI()
 		}
 		case CONTENT_TYPE::SKILLPRESENTATION_INI:
 		{
-			if (m_infoGenerate.skinId.empty() || 0 == m_infoGenerate.heroId.compare(m_info.skinId))
+			if (m_infoGenerate.skinId.empty() || 0 == m_infoGenerate.skinId.compare(m_info.skinId))
 			{
 				return CSingleton::gSkillPresentationIniProcessor.GetSkillTotalContent(skillIds);
 			}
@@ -89,31 +95,72 @@ void QtSkillModelGenerate::initUI()
 		}
 		case CONTENT_TYPE::PRT_C_XML:
 		{
-			std::map<std::string, std::string> skillData;
-			CSingleton::gSkillPrtCProcessor.GetSkillPrtData(prtSkillNames, skillData, m_info.skinName, m_infoGenerate.skinName);
-			return m_SkillPrtCProcessor.GenerateTotalContent(skillData);
+			if (m_infoGenerate.skinId.empty() || 0 == m_infoGenerate.skinId.compare(m_info.skinId))
+			{
+				return CSingleton::gSkillPrtCProcessor.GetSkillTotalContent(prtSkillNames);
+			}
+			else
+			{
+				std::map<std::string, std::string> skillData;
+				CSingleton::gSkillPrtCProcessor.GetSkillPrtData(prtSkillNames, skillData, m_info.skinName, m_infoGenerate.skinName);
+				return m_SkillPrtCProcessor.GenerateTotalContent(skillData);
+			}
 		}
 		case CONTENT_TYPE::PRT_P_XML:
 		{
 			std::set<std::string> setPrtNames;
 			CSingleton::gSkillPrtCProcessor.GetPrtNames(prtSkillNames, setPrtNames);
-			std::map<std::string, std::string> prtData;
-			CSingleton::gSkillPrtPProcessor.GetPrtData(setPrtNames, prtData, m_info.skinName, m_infoGenerate.skinName);
-			return m_SkillPrtPProcessor.GenerateTotalContent(prtData);
+			if (m_infoGenerate.skinId.empty() || 0 == m_infoGenerate.skinId.compare(m_info.skinId))
+			{
+				return CSingleton::gSkillPrtPProcessor.GetPrtTotalContent(setPrtNames);
+			}
+			else
+			{
+				std::map<std::string, std::string> prtData;
+				CSingleton::gSkillPrtPProcessor.GetPrtData(setPrtNames, prtData, m_info.skinName, m_infoGenerate.skinName);
+				return m_SkillPrtPProcessor.GenerateTotalContent(prtData);
+			}
 		}
 		case CONTENT_TYPE::UNITS_XML:
 		{
-			return CSingleton::gUnitsXmlProcessor.GetTotalContent(m_info.skinId);
+			if (m_infoGenerate.skinId.empty() || 0 == m_infoGenerate.skinId.compare(m_info.skinId))
+			{
+				return CSingleton::gUnitsXmlProcessor.GetTotalContent(m_info.skinId);
+			}
+			else
+			{
+				std::pair<std::string, std::string> cfg;
+				CSingleton::gUnitsXmlProcessor.GetUnitData(m_info.skinId, cfg, m_infoGenerate.skinId, m_infoGenerate.roleId, m_info.skinName, m_infoGenerate.skinName);
+				return m_UnitsXmlProcessor.GenerateTotalContent(cfg.first, cfg.second);
+			}
 		}
 		case CONTENT_TYPE::ROLES_XML:
 		{
-			return CSingleton::gRolesXmlProcessor.GetTotalContent(CSingleton::gUnitsXmlProcessor.GetRoleId(m_info.skinId));
+			if (m_infoGenerate.skinId.empty() || 0 == m_infoGenerate.skinId.compare(m_info.skinId))
+			{
+				return CSingleton::gRolesXmlProcessor.GetTotalContent(m_info.roleId);
+			}
+			else
+			{
+				std::pair<std::string, std::string> cfg;
+				CSingleton::gRolesXmlProcessor.GetRoleData(m_info.roleId, cfg, m_infoGenerate.roleId, m_info.skinName, m_infoGenerate.skinName);
+				return m_RolesXmlProcessor.GenerateTotalContent(cfg.first, cfg.second);
+			}
 		}
 		case CONTENT_TYPE::SKIN_PRT_P_XML:
 		{
 			std::set<std::string> setPrtNames;
 			CSingleton::gUnitsXmlProcessor.GetBasePresentations(m_info.skinId, setPrtNames);
-			return CSingleton::gSkillPrtPProcessor.GetPrtTotalContent(setPrtNames);
+			if (m_infoGenerate.skinId.empty() || 0 == m_infoGenerate.skinId.compare(m_info.skinId))
+			{
+				return CSingleton::gSkillPrtPProcessor.GetPrtTotalContent(setPrtNames);
+			}
+			else
+			{
+				std::map<std::string, std::string> prtData;
+				CSingleton::gSkillPrtPProcessor.GetPrtData(setPrtNames, prtData, m_info.skinName, m_infoGenerate.skinName);
+				return m_SkillPrtPProcessor.GenerateTotalContent(prtData);
+			}
 		}
 		}
 		return std::string("");
@@ -142,6 +189,11 @@ void QtSkillModelGenerate::onBtnGenerateClicked()
 	{
 		m_infoGenerate.skillId = m_info.skillId;
 	}
+	m_infoGenerate.roleId = ui.edit_dst_roleid->text().toStdString();
+	if (m_infoGenerate.roleId.empty())
+	{
+		m_infoGenerate.roleId = m_info.roleId;
+	}
 
 	setModelInfo(m_infoGenerate.heroId, m_infoGenerate.skinId, m_infoGenerate.skinName);
 }
@@ -163,9 +215,29 @@ void QtSkillModelGenerate::onBtnExportClicked()
 	{
 		m_infoGenerate.skillId = m_info.skillId;
 	}
+	m_infoGenerate.roleId = ui.edit_dst_roleid->text().toStdString();
+	if (m_infoGenerate.roleId.empty())
+	{
+		m_infoGenerate.roleId = m_info.roleId;
+	}
 
 	setModelInfo(m_infoGenerate.heroId, m_infoGenerate.skinId, m_infoGenerate.skinName);
 
+	switch (CSingleton::gEditType)
+	{
+	case EDIT_TYPE::SKILL_MODEL:
+	{
+		exportSkillConfig();
+	}break;
+	case EDIT_TYPE::SKIN_MODEL:
+	{
+		exportSkinConfig();
+	}break;
+	}
+}
+
+void QtSkillModelGenerate::exportSkillConfig()
+{
 	std::vector<std::string> skillIds;
 	CSingleton::gSkillDataLuaProcesser.GetSkillIds(m_info.skillId, skillIds);
 
@@ -211,6 +283,26 @@ void QtSkillModelGenerate::onBtnExportClicked()
 	}
 }
 
+void QtSkillModelGenerate::exportSkinConfig()
+{
+	if (m_infoGenerate.skinId.compare(m_info.skinId))
+	{
+		std::pair<std::string, std::string> cfgUnits;
+		CSingleton::gUnitsXmlProcessor.GetUnitData(m_info.skinId, cfgUnits, m_infoGenerate.skinId, m_infoGenerate.roleId, m_info.skinName, m_infoGenerate.skinName);
+		m_UnitsXmlProcessor.ExportGeneratedTotalContent(cfgUnits.first, cfgUnits.second);
+
+		std::pair<std::string, std::string> cfgRoles;
+		CSingleton::gRolesXmlProcessor.GetRoleData(m_info.roleId, cfgRoles, m_infoGenerate.roleId, m_info.skinName, m_infoGenerate.skinName);
+		m_RolesXmlProcessor.ExportGeneratedTotalContent(cfgRoles.first, cfgRoles.second);
+
+		std::set<std::string> setPrtNames;
+		CSingleton::gUnitsXmlProcessor.GetBasePresentations(m_info.skinId, setPrtNames);
+		std::map<std::string, std::string> prtData;
+		CSingleton::gSkillPrtPProcessor.GetPrtData(setPrtNames, prtData, m_info.skinName, m_infoGenerate.skinName);
+		m_SkillPrtPProcessor.ExportGeneratedTotalContent(prtData);
+	}
+}
+
 void QtSkillModelGenerate::SetModelInfo(MODEL_INFO info)
 {
 	m_pPreview->RefreshTab();
@@ -219,6 +311,7 @@ void QtSkillModelGenerate::SetModelInfo(MODEL_INFO info)
     ui.edit_src_skinid->setText(QString::fromUtf8(info.skinId.c_str()));
     ui.edit_src_skinname->setText(QString::fromUtf8(info.skinName.c_str()));
     ui.edit_src_skillid->setText(QString::fromUtf8(info.skillId.c_str()));
+	ui.edit_src_roleid->setText(QString::fromUtf8(info.roleId.c_str()));
 
 	setModelInfo(info.heroId, info.skinId, info.skinName);
 }
@@ -230,6 +323,8 @@ void QtSkillModelGenerate::setModelInfo(std::string heroId, std::string skinId, 
 	m_SkillConditionIniProcessor.SetHeroId(heroId);
 	m_SkillPresentationIniProcessor.SetHeroId(heroId);
 	m_SkillPresentationIniProcessor.SetSkinId(skinId);
+	m_UnitsXmlProcessor.SetSkinId(skinId);
+	m_RolesXmlProcessor.SetSkinId(skinId);
 
 	auto skinPath = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + skinId + "/presentations/";
 	std::string pathPrtC = DeepFindInDir(skinPath, "_c.prt");

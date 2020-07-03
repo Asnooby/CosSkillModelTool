@@ -15,17 +15,32 @@ void CRolesXmlProcessor::SetSkinId(std::string skinId)
 	parseXmlCfg(m_lines, "Role", "id", m_roles);
 }
 
-std::string CRolesXmlProcessor::GetTotalContent(std::string roleId)
+void CRolesXmlProcessor::GetRoleData(std::string roleId, std::pair<std::string, std::string>& outCfg
+	, std::string newRoleId/* = ""*/, std::string skinName/* = ""*/, std::string newSkinName/* = ""*/)
 {
-	std::string content;
-	content += "<Roles>\r\n";
 	if (m_roles.end() != m_roles.find(roleId))
 	{
-		content += m_roles[roleId].block;
+		outCfg.first = roleId;
+		auto block = m_roles[roleId].block;
+		if (roleId != newRoleId)
+		{
+			outCfg.first = newRoleId;
+			auto index_1 = block.find("<Role ");
+			if (std::string::npos != index_1)
+			{
+				auto index_2 = block.find('"', index_1 + 1);
+				auto index_3 = block.find('"', index_2 + 1);
+				auto contentSrc = block.substr(index_1, index_3 - index_1);
+				std::string contentDst = "<Role id=\"" + newRoleId + "\"";
+				replace_str(block, contentSrc, contentDst);
+			}
+		}
+		if (skinName != newSkinName)
+		{
+			replace_str(block, skinName, newSkinName);
+		}
+		outCfg.second = std::move(block);
 	}
-	content += "</Roles>";
-
-	return content;
 }
 
 std::string CRolesXmlProcessor::GetPrtPPath(std::string roleId)
@@ -62,4 +77,57 @@ std::string CRolesXmlProcessor::GetPrtCPath(std::string roleId)
 	}
 
 	return path;
+}
+
+std::string CRolesXmlProcessor::GetTotalContent(std::string roleId)
+{
+	std::string content;
+	content += "<Roles>\r\n";
+	if (m_roles.end() != m_roles.find(roleId))
+	{
+		content += m_roles[roleId].block;
+	}
+	content += "</Roles>";
+
+	return content;
+}
+
+std::string CRolesXmlProcessor::GenerateTotalContent(std::string roleId, std::string block)
+{
+	vector<string> lines = m_lines;
+
+	auto iterEnd = lines.end();
+	if (m_roles.empty())
+	{
+		lines.push_back("<Roles>\r\n");
+		lines.push_back("</Roles>");
+		iterEnd = lines.end() - 1;
+	}
+	else
+	{
+		for (auto iter = lines.rbegin(); iter != lines.rend(); iter++)
+		{
+			if (std::string::npos != iter->find("/Roles"))
+			{
+				iterEnd = iter.base() - 1;
+				break;
+			}
+		}
+	}
+
+	lines.insert(iterEnd, block);
+
+	std::string content;
+	for (const auto& line : lines)
+	{
+		content += line;
+	}
+	return content;
+}
+
+void CRolesXmlProcessor::ExportGeneratedTotalContent(std::string roleId, std::string block)
+{
+	SetPath(m_path, true);
+	auto content = GenerateTotalContent(roleId, block);
+	WriteTotalContent(content);
 }

@@ -174,12 +174,22 @@ void QtSkillModelTool::onClickButtonBtnGenerate()
 			if (skinIdAndName.npos != index)
 			{
 				info.skinId = skinIdAndName.substr(0, index - 1);
+				info.roleId = CSingleton::gUnitsXmlProcessor.GetRoleId(info.skinId);
 				info.skinName = skinIdAndName.substr(index + 1, skinIdAndName.length() - index);
 				info.skinName.erase(std::remove_if(info.skinName.begin(), info.skinName.end(), [&](char c) { return c == ' '; }), info.skinName.end());
 			}
 		}
 	}
 
+	pSlm = (QStringListModel*)ui.list_view_skills->model();
+	if (pSlm)
+	{
+		QVariant variant = pSlm->data(ui.list_view_skills->currentIndex(), Qt::DisplayRole);
+		if (variant.isValid())
+		{
+			info.skillId = variant.toString().toStdString();
+		}
+	}
 	pSlm = (QStringListModel*)ui.list_view_skills->model();
 	if (pSlm)
 	{

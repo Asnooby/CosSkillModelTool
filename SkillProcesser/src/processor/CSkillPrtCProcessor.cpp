@@ -62,6 +62,20 @@ std::string CSkillPrtCProcessor::GetSkillTotalContent(const std::map<std::string
 	content += "<SkillPresentationSet>\r\n";
 	for (auto iter = prtNames.begin(); iter != prtNames.end(); iter++)
 	{
+		bool bGot = false;
+		for (auto iiter = prtNames.begin(); iiter != iter; iiter++)
+		{
+			if (0 == iiter->second.compare(iter->second))
+			{
+				bGot = !bGot;
+				break;;
+			}
+		}
+		if (bGot)
+		{
+			continue;
+		}
+
 		auto iterPrt = m_skills.find(iter->second);
 		if (iterPrt != m_skills.end())
 		{

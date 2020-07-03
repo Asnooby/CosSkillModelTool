@@ -3,13 +3,16 @@
 #include <QtWidgets/QMainWindow>
 #include "ui_QtSkillModelGenerate.h"
 #include "QtConfigPreview.h"
-#include "src/processor/BaseDefine.h"
+#include "src/processor/CSkinProcessor.h"
 #include "src/processor/CSkillIniProcessor.h"
 #include "src/processor/CSkillPrtCProcessor.h"
 #include "src/processor/CSkillPrtPProcessor.h"
 #include "src/processor/CSkillDataLuaProcessor.h"
+#include "src/processor/CSkinSpDescribeProcessor.h"
 #include "src/processor/CSkillConditionIniProcessor.h"
 #include "src/processor/CSkillPresentationIniProcessor.h"
+#include "src/processor/CUnitsXmlProcessor.h"
+#include "src/processor/CRolesXmlProcessor.h"
 
 class QtSkillModelGenerate : public QDialog
 {
@@ -22,9 +25,12 @@ public:
     void SetModelInfo(MODEL_INFO info);
 
 private:
+	void showEvent(QShowEvent*) override;
     void bindSignalEvent();
     void initUI();
-    void setModelInfo(std::string heroId, std::string skinId, std::string skinName);
+	void setModelInfo(std::string heroId, std::string skinId, std::string skinName);
+	void exportSkillConfig();
+	void exportSkinConfig();
 
 private slots:
     void onBtnGenerateClicked();
@@ -41,5 +47,7 @@ private:
     CSkillPrtPProcessor m_SkillPrtPProcessor;
     CSkillDataLuaProcessor m_SkillDataLuaProcesser;
     CSkillConditionIniProcessor m_SkillConditionIniProcessor;
-    CSkillPresentationIniProcessor m_SkillPresentationIniProcessor;
+	CSkillPresentationIniProcessor m_SkillPresentationIniProcessor;
+    CUnitsXmlProcessor m_UnitsXmlProcessor;
+    CRolesXmlProcessor m_RolesXmlProcessor;
 };

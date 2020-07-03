@@ -23,6 +23,7 @@ typedef struct
 {
 	std::string heroId;
 	std::string skinId;
+	std::string roleId;
 	std::string skinName;
 	std::string skillId;
 	std::string skillName;
