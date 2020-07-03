@@ -31,6 +31,7 @@ private:
 	void setModelInfo(std::string heroId, std::string skinId, std::string skinName);
 	void exportSkillConfig();
 	void exportSkinConfig();
+	void completeSkinModelFiles();
 
 private slots:
     void onBtnGenerateClicked();

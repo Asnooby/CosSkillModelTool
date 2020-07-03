@@ -344,7 +344,7 @@ void QtSkillModelTool::refreshHeroList(std::string key/* = ""*/)
 				break;
 			}
 		}
-		if (protoSkin.empty())
+		if (protoSkin.empty() && !skins.empty())
 		{
 			protoSkin = skins[0];
 		}

@@ -20,17 +20,7 @@ void CFileBase::SetPath(const std::string path, bool createIfNotExist/* = false*
 	{
 		if (createIfNotExist)
 		{
-			auto folder = path;
-			replace_str(folder, "\\", "/");
-			auto index = folder.rfind('/');
-			if (folder.npos != index)
-			{
-				folder = folder.substr(0, index);
-			}
-			createDirectory(folder);
-			fopen_s(&fp, path.c_str(), "w");
-			fclose(fp);
-			fp = nullptr;
+			createFile(path);
 		}
 	}
 	else

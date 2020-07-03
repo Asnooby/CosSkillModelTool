@@ -9,6 +9,7 @@ class CFileBase
 public:
 	CFileBase();
 	virtual void SetPath(const std::string path, bool createIfNotExist = false);
+	inline std::string GetPath() { return m_path; }
 
 protected:
 	void ReadFileLines(const std::string path, std::vector<std::string>& lines);

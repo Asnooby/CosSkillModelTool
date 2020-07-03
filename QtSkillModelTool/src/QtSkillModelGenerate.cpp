@@ -234,6 +234,7 @@ void QtSkillModelGenerate::onBtnExportClicked()
 		exportSkinConfig();
 	}break;
 	}
+	completeSkinModelFiles();
 }
 
 void QtSkillModelGenerate::exportSkillConfig()
@@ -355,4 +356,45 @@ void QtSkillModelGenerate::setModelInfo(std::string heroId, std::string skinId, 
 	m_SkillPrtPProcessor.SetPath(pathPrtP);
 
 	m_pPreview->SetPrtName(prtNameP, prtNameC);
+}
+
+void QtSkillModelGenerate::completeSkinModelFiles()
+{
+	std::string HeroFolder = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + m_infoGenerate.heroId + "_common/";
+	std::string SkinFolder = CSingleton::gEnvParams.strProjectPath + "/Debug/singlepackage/heropackage/" + m_infoGenerate.skinId + "/";
+	std::set<std::string> FileComplement(
+		{
+			HeroFolder + "data/config/" + "creatureinfo.ini",
+			HeroFolder + "data/config/" + "p2pskill.ini",
+			HeroFolder + "data/config/" + "serverstate.ini",
+			HeroFolder + "data/config/" + "skill.ini",
+			HeroFolder + "data/config/" + "skillcondition.ini",
+			HeroFolder + "data/config/" + "skilldata.lua",
+			HeroFolder + "data/config/" + "skillpresentation.ini",
+			HeroFolder + "data/config/" + "sounddata.lua",
+			HeroFolder + "data/config/" + "summonbiont.ini",
+			HeroFolder + "data/config/" + "units.xml",
+			HeroFolder + "data/config/" + "unitvoice.ini",
+			HeroFolder + "presentations/" + "roles.xml",
+
+			SkinFolder + "data/config/" + "creatureinfo.ini",
+			SkinFolder + "data/config/" + "p2pskill.ini",
+			SkinFolder + "data/config/" + "serverstate.ini",
+			SkinFolder + "data/config/" + "skill.ini",
+			SkinFolder + "data/config/" + "skillcondition.ini",
+			SkinFolder + "data/config/" + "skillpresentation.ini",
+			SkinFolder + "data/config/" + "sounddata.lua",
+			SkinFolder + "data/config/" + "summonbiont.ini",
+			SkinFolder + "data/config/" + "units.xml",
+			SkinFolder + "data/config/" + "unitvoice.ini",
+			SkinFolder + "presentations/" + "roles.xml",
+			m_SkillPrtPProcessor.GetPath(),
+			m_SkillPrtCProcessor.GetPath()
+		}
+	);
+
+	for (const auto& path : FileComplement)
+	{
+		createFile(path);
+	}
 }

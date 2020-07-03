@@ -60,7 +60,7 @@ string DeepFindInDir(string path, string key)
 	return ret;
 }
 
-bool readFileLines(const string path, vector<string>& lines, unsigned int nSizeHeader/* = 0*/)
+bool readFileLines(const string& path, vector<string>& lines, unsigned int nSizeHeader/* = 0*/)
 {
 	FILE* file;
 	fopen_s(&file, path.c_str(), "rb");
@@ -80,7 +80,7 @@ bool readFileLines(const string path, vector<string>& lines, unsigned int nSizeH
 	return false;
 }
 
-bool readWideFileLines(const wstring path, vector<wstring>& lines, unsigned int nSizeHeader/* = 0*/)
+bool readWideFileLines(const wstring& path, vector<wstring>& lines, unsigned int nSizeHeader/* = 0*/)
 {
 	FILE* file;
 	_wfopen_s(&file, path.c_str(), L"rb,ccs=UNICODE");
@@ -239,7 +239,41 @@ void replace_str(std::string& str, const std::string& before, const std::string&
 	}
 }
 
-bool createDirectory(const string folder)
+bool createFile(const string& path, bool bForced/* = false*/)
+{
+	FILE* fp = nullptr;
+	if (!bForced)
+	{
+		fopen_s(&fp, path.c_str(), "r");
+		if (fp)
+		{
+			fclose(fp);
+			fp = nullptr;
+			return true;
+		}
+	}
+
+	auto folder = path;
+	replace_str(folder, "\\", "/");
+	auto index = folder.rfind('/');
+	if (folder.npos != index)
+	{
+		folder = folder.substr(0, index);
+	}
+	
+	if (!createDirectory(folder))
+	{
+		return false;
+	}
+
+	fopen_s(&fp, path.c_str(), "w");
+	fclose(fp);
+	fp = nullptr;
+
+	return true;
+}
+
+bool createDirectory(const string& folder)
 {
 	std::string folder_builder;
 	std::string sub;
